@@ -1,0 +1,12 @@
+/** @format */
+
+@media (max-width: 768px) {
+  .Login-page .login-page-container {
+    
+    min-width: 100%;
+    max-width: 100%;
+  }
+  .Login-page .login-page-container .logo{
+    max-width: 60px;
+  }
+}

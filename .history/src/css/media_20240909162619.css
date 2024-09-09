@@ -1,0 +1,7 @@
+/** @format */
+
+@media (max-width: 768px) {
+  .Login-page .login-page-container {
+    width: 100%;
+  }
+}

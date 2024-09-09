@@ -1,0 +1,21 @@
+/** @format */
+
+:root {
+  --poppin-font: "Poppins";
+  --font-size-base: 16px;
+  --font-size-small: 14px;
+  --font-size-medium: 18px;
+  --font-size-large : 20px;
+
+  --font-size-large : 20px;
+  --font-size-xs-small: 12px;
+  --root-bg: #f0f2f7;
+}
+
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: var(--poppin-font) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

@@ -1,0 +1,17 @@
+/** @format */
+
+:root {
+  --poppin-font: "Poppins";
+}
+
+body {
+  margin: 0;
+  font-family: var(--poppin-font) !;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}

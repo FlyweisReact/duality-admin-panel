@@ -1,0 +1,13 @@
+.Login-page{
+    padding: 20px;
+    background-color: #F0F2F7;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.Login-page .login-page-container{
+    background-color: #fff;
+    min-width: 450px;
+    max-width: 600px;
+    width: 100%;
+}
