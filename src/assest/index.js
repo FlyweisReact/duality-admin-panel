@@ -14,11 +14,16 @@ import privacyIcon from "./Images/privacy-icon.png";
 import faqIcon from "./Images/faq-icon.png";
 import graphUp from "./Images/graph-up.png";
 import graphDown from "./Images/graph-down.png";
-import userEllipse from './Images/Ellipse 16.png'
-import trendingImg1 from './Images/trending1.png'
-import trendingImg2 from './Images/trending2.png'
-import trendingImg3 from './Images/trending3.png'
-import trendingImg4 from './Images/trending4.png'
+import userEllipse from "./Images/Ellipse 16.png";
+import trendingImg1 from "./Images/trending1.png";
+import trendingImg2 from "./Images/trending2.png";
+import trendingImg3 from "./Images/trending3.png";
+import trendingImg4 from "./Images/trending4.png";
+import editUserImg from "./Images/User.png";
+import userPhoto1 from './Images/user-photo.png'
+import userPhoto2 from './Images/user-photo2.png'
+import post1 from './Images/post.png'
+import ticketSvg from './Images/ticket.png'
 
 export {
   horizontalLogo,
@@ -39,5 +44,10 @@ export {
   trendingImg1,
   trendingImg2,
   trendingImg3,
-  trendingImg4
+  trendingImg4,
+  editUserImg,
+  userPhoto1,
+  userPhoto2,
+  post1,
+  ticketSvg
 };

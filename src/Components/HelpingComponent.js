@@ -1,8 +1,7 @@
 /** @format */
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { graphUp, graphDown } from "../assest";
 
 const LoginInput = ({ label, type, placeholder, icon }) => {
   return (
@@ -70,46 +69,6 @@ const OtpInput = ({ length = 6, onChange }) => {
   );
 };
 
-const DashboardCard = ({ title, count, percentage, isUp, bg }) => {
-  const [currentCount, setCurrentCount] = useState(0);
-
-  useEffect(() => {
-    let start = 0;
-    const end = parseInt(count.replace(/,/g, ""), 10); // Remove commas and parse as number
-    if (start === end) return; // If start is the same as end, there's no need to count.
-
-    let duration = 2000; // Duration of the animation in milliseconds
-    let incrementTime = (duration / end) * 1000; // Time between each increment
-
-    const incrementCounter = () => {
-      start += 1;
-      setCurrentCount(start);
-      if (start < end) {
-        requestAnimationFrame(incrementCounter);
-      }
-    };
-
-    requestAnimationFrame(incrementCounter);
-  }, [count]);
-
-  return (
-    <div className="dashboard-card" style={{ backgroundColor: bg }}>
-      <div className="counts">
-        <p className="sub-heading">{title}</p>
-        <p className="heading">{currentCount.toLocaleString()}</p>
-      </div>
-      {percentage ? (
-        <div className={`up-skill ${isUp ? "up" : "down"}`}>
-          <p className="count">{percentage}</p>
-          {isUp ? <img src={graphUp} alt="" /> : <img src={graphDown} alt="" />}
-        </div>
-      ) : (
-        <div className="up-skill" />
-      )}
-    </div>
-  );
-};
-
 const BackBtn = () => {
   const navigate = useNavigate();
   return (
@@ -123,4 +82,24 @@ const SectionHeading = ({ title, className }) => {
   return <p className={`section-heading ${className}`}>{title}</p>;
 };
 
-export { LoginInput, OtpInput, DashboardCard, BackBtn, SectionHeading };
+const CustomPagination = () => {
+  return (
+    <div className="pagination">
+      <button>
+        {" "}
+        <i className="fa-solid fa-caret-left"></i>{" "}
+      </button>
+      <button className="active">1</button>
+      <button>2</button>
+      <button>3</button>
+      <button>...</button>
+      <button>10</button>
+      <button>
+        {" "}
+        <i className="fa-solid fa-caret-right"></i>{" "}
+      </button>
+    </div>
+  );
+};
+
+export { LoginInput, OtpInput, BackBtn, SectionHeading, CustomPagination };

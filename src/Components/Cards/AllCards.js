@@ -1,5 +1,7 @@
 /** @format */
 
+import { graphDown, graphUp } from "../../assest";
+
 const TicketCards = ({ className }) => {
   return (
     <div className={`ticket-card ${className}`}>
@@ -40,4 +42,37 @@ const TrendingCard = ({ className, title, subTitle, images = [] }) => {
   );
 };
 
-export { TicketCards, TrendingCard };
+const DashboardCard = ({
+  title,
+  count,
+  percentage,
+  isUp,
+  bg,
+  onClickEvent,
+}) => {
+  return (
+    <div
+      className="dashboard-card"
+      style={{
+        backgroundColor: bg,
+        cursor: onClickEvent ? "pointer" : "default",
+      }}
+      onClick={onClickEvent}
+    >
+      <div className="counts">
+        <p className="sub-heading">{title}</p>
+        <p className="heading">{count}</p>
+      </div>
+      {percentage ? (
+        <div className={`up-skill ${isUp ? "up" : "down"}`}>
+          <p className="count">{percentage}</p>
+          {isUp ? <img src={graphUp} alt="" /> : <img src={graphDown} alt="" />}
+        </div>
+      ) : (
+        <div className="up-skill" />
+      )}
+    </div>
+  );
+};
+
+export { TicketCards, TrendingCard, DashboardCard };

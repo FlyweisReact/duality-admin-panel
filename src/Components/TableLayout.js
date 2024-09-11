@@ -5,7 +5,7 @@ import React from "react";
 const TableLayout = ({ thead, tbody, className }) => {
   return (
     <>
-      <div className="table-container">
+      <div className="overFlowCont">
         <table className={className}>
           <thead>
             <tr>

@@ -37,7 +37,11 @@ const Sidebar = () => {
           </div>
         </div>
 
-        <div className="log-out">
+        <div
+          className="log-out"
+          onClick={() => navigate("/")}
+          style={{ cursor: "pointer" }}
+        >
           <i className="fa-solid fa-right-from-bracket"></i>
           <p>Log out</p>
         </div>

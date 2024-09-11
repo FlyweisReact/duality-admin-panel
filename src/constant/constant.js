@@ -10,6 +10,7 @@ import {
   termIcon,
   privacyIcon,
   faqIcon,
+  ticketSvg,
 } from "../assest";
 
 export const sidebarLinks = [
@@ -37,6 +38,11 @@ export const sidebarLinks = [
     link: "/help-support",
     title: "Help & Support",
     img: serviceIcon,
+  },
+  {
+    link: "/all-tickets",
+    title: "Tickets",
+    img: ticketSvg,
   },
   {
     link: "/query",
