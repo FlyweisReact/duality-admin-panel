@@ -750,6 +750,13 @@ table tbody tr:nth-child(even) {
   display: block;
   border-radius: 100%;
 }
+.user-table .active-status .not-active-bg {
+  width: 20px;
+  height: 20px;
+  background-color: #b8001f;
+  display: block;
+  border-radius: 100%;
+}
 
 .pagination {
   display: flex;
@@ -1241,4 +1248,35 @@ table tbody tr:nth-child(even) {
 .overFlowCont {
   overflow-x: auto;
   width: 100%;
+}
+
+.fullscreen-spinner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+}
+
+.fullscreen-spinner .spinner {
+  border: 2px solid #fff;
+  border-radius: 50%;
+  border-top: 2px solid rgba(0, 0, 0, 0.45);
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

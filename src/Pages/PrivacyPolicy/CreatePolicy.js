@@ -1,10 +1,28 @@
 /** @format */
 
-import React from "react";
+import React, { useState } from "react";
 import { BackBtn, SectionHeading } from "../../Components/HelpingComponent";
 import HOC from "../../Layouts/HOC";
+import { postApi } from "../../Repository/Api";
+import endPoints from "../../Repository/apiConfig";
+import { ClipLoader } from "react-spinners";
 
 const CreatePolicy = () => {
+  const [header, setHeader] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const payload = {
+    header,
+  };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    postApi(endPoints.policy.create, payload, {
+      successMsg: "Success !",
+      setLoading,
+    });
+  };
+
   return (
     <div>
       <div
@@ -16,17 +34,18 @@ const CreatePolicy = () => {
       </div>
 
       <section className="update-profile-section space-bg">
-        <p className="table-heading mb-5">Create new privacy policy</p>
-        <form>
+        <p className="table-heading mb-2">Create new privacy policy</p>
+        <form onSubmit={submitHandler}>
           <div className="input-div">
-            <p>Title</p>
-            <input type={"text"} placeholder="Enter Title" />
+            <textarea
+              placeholder="Write here..."
+              onChange={(e) => setHeader(e.target.value)}
+              value={header}
+            />
           </div>
-          <div className="input-div">
-            <p>Discription</p>
-            <textarea placeholder="Write description Here." />
-          </div>
-          <button className="submit-btn">Create</button>
+          <button className="submit-btn" type="submit">
+            {loading ? <ClipLoader color="#fff" /> : "Create"}
+          </button>
         </form>
       </section>
     </div>

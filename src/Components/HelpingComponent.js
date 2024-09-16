@@ -3,12 +3,26 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const LoginInput = ({ label, type, placeholder, icon }) => {
+const LoginInput = ({
+  label,
+  type,
+  placeholder,
+  icon,
+  required,
+  value,
+  onChangeEvent,
+}) => {
   return (
     <div className="input-div">
       <p>{label}:</p>
       <div className="field-div">
-        <input type={type} placeholder={placeholder} />
+        <input
+          type={type}
+          placeholder={placeholder}
+          onChange={onChangeEvent}
+          value={value}
+          required={required}
+        />
         <div className="icon">{icon}</div>
       </div>
     </div>
@@ -82,19 +96,30 @@ const SectionHeading = ({ title, className }) => {
   return <p className={`section-heading ${className}`}>{title}</p>;
 };
 
-const CustomPagination = () => {
+const CustomPagination = ({
+  currentPage,
+  setCurrentPage,
+  hasPrevPage,
+  hasNextPage,
+}) => {
+  const prevPage = () => {
+    if (hasPrevPage) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+  const nextPage = () => {
+    if (hasNextPage) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
   return (
     <div className="pagination">
-      <button>
+      <button onClick={() => prevPage()}>
         {" "}
         <i className="fa-solid fa-caret-left"></i>{" "}
       </button>
-      <button className="active">1</button>
-      <button>2</button>
-      <button>3</button>
-      <button>...</button>
-      <button>10</button>
-      <button>
+      <button className="active"> {currentPage} </button>
+      <button onClick={() => nextPage()}>
         {" "}
         <i className="fa-solid fa-caret-right"></i>{" "}
       </button>
@@ -102,4 +127,12 @@ const CustomPagination = () => {
   );
 };
 
-export { LoginInput, OtpInput, BackBtn, SectionHeading, CustomPagination };
+const CustomLoader = () => {
+  return (
+    <div className="fullscreen-spinner">
+      <div className="spinner"></div>
+    </div>
+  );
+};
+
+export { LoginInput, OtpInput, BackBtn, SectionHeading, CustomPagination ,CustomLoader };

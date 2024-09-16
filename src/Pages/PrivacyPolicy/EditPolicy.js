@@ -1,10 +1,42 @@
 /** @format */
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BackBtn, SectionHeading } from "../../Components/HelpingComponent";
 import HOC from "../../Layouts/HOC";
+import { useParams } from "react-router-dom";
+import { getApi, putApi } from "../../Repository/Api";
+import endPoints from "../../Repository/apiConfig";
+import { ClipLoader } from "react-spinners";
 
 const EditPolicy = () => {
+  const { id } = useParams();
+  const [data, setData] = useState({});
+  const [header, setheader] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const payload = {
+    header,
+  };
+
+  useEffect(() => {
+    getApi(endPoints.policy.getbyId(id), {
+      setResponse: setData,
+    });
+  }, [id]);
+
+  useEffect(() => {
+    if (data) {
+      setheader(data?.data?.header);
+    }
+  }, [data]);
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    putApi(endPoints.policy.edit(id), payload, {
+      setLoading,
+    });
+  };
+
   return (
     <div>
       <div
@@ -16,26 +48,18 @@ const EditPolicy = () => {
       </div>
 
       <section className="update-profile-section space-bg">
-        <p className="table-heading mb-5">Edit privacy policy</p>
-        <form>
+        <p className="table-heading mb-3">Edit privacy policy</p>
+        <form onSubmit={submitHandler}>
           <div className="input-div">
-            <p>Title</p>
-            <input
-              type={"text"}
-              placeholder="Enter Title"
-              value={"Sed ut perspiciatis"}
-            />
-          </div>
-          <div className="input-div">
-            <p>Discription</p>
             <textarea
-              placeholder="Write description Here."
-              value={
-                "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui "
-              }
+              placeholder="Write here..."
+              value={header}
+              onChange={(e) => setheader(e.target.value)}
             />
           </div>
-          <button className="submit-btn">Update</button>
+          <button className="submit-btn" type="submit">
+            {loading ? <ClipLoader color="#fff" /> : "Update"}
+          </button>
         </form>
       </section>
     </div>

@@ -112,7 +112,7 @@ const routes = [
     element: <CreatePolicy />,
   },
   {
-    path: "/edit-policy",
+    path: "/edit-policy/:id",
     element: <EditPolicy />,
   },
   {

@@ -1,43 +1,65 @@
 /** @format */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { SectionHeading } from "../../Components/HelpingComponent";
+import {
+  CustomLoader,
+  SectionHeading,
+} from "../../Components/HelpingComponent";
 import { EditNotification } from "../../Components/Modals";
 import TableLayout from "../../Components/TableLayout";
 import HOC from "../../Layouts/HOC";
+import { deleteApi, getApi } from "../../Repository/Api";
+import endPoints from "../../Repository/apiConfig";
 
 const Notification = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [data, setData] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  const thead = ["Title", "Content", "Status", "Actions"];
+  const removeNotifications = (id) => {
+    deleteApi(endPoints.notifications.remove(id), {
+      setLoading,
+      additionalFunctions: [fetchHandler],
+    });
+  };
 
-  const tbody = [
-    [
-      "Lorem lipsum ipsum",
-      "Sed ut perspiciatis unde omnis",
-      <span className="read-status">Read</span>,
-      <div className="table-actions">
-        <i className="fa-solid fa-pen" onClick={() => setOpen(true)}></i>
-        <i className="fa-regular fa-trash-can"></i>
-        <i className="fa-solid fa-share"></i>
-      </div>,
-    ],
-    [
-      "Lorem lipsum ipsum",
-      "Sed ut perspiciatis unde omnis",
-      <span className="unread-status">Unread</span>,
-      <div className="table-actions">
-        <i className="fa-solid fa-pen" onClick={() => setOpen(true)}></i>
-        <i className="fa-regular fa-trash-can"></i>
-        <i className="fa-solid fa-share"></i>
-      </div>,
-    ],
-  ];
+  const fetchHandler = () => {
+    getApi(endPoints.notifications.getAll, {
+      setResponse: setData,
+      setLoading,
+    });
+  };
+
+  useEffect(() => {
+    fetchHandler();
+  }, []);
+
+  const thead = ["Sno", "Title", "Content", "Status", "Actions"];
+
+  const tbody = data?.data?.map((i, index) => [
+    `#${index + 1}`,
+    i?.title,
+    i?.content,
+    i?.status === "unread" ? (
+      <span className="unread-status">Unread</span>
+    ) : (
+      <span className="read-status">Read</span>
+    ),
+    <div className="table-actions">
+      <i className="fa-solid fa-pen" onClick={() => setOpen(true)}></i>
+      <i
+        className="fa-regular fa-trash-can"
+        onClick={() => removeNotifications(i?._id)}
+      ></i>
+      <i className="fa-solid fa-share"></i>
+    </div>,
+  ]);
 
   return (
     <section className="notification-page">
+      {loading && <CustomLoader />}
       <EditNotification show={open} handleClose={() => setOpen(false)} />
       <SectionHeading title={"Notification"} />
 
