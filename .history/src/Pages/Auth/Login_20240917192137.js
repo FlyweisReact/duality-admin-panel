@@ -63,23 +63,16 @@ const Login = () => {
                 value={password}
                 required={true}
               />
-              {isPassword ? (
-                <div
-                  className="icon"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => setIsPassword(false)}
-                >
-                  <i className="fa-solid fa-eye-slash"></i>
-                </div>
-              ) : (
-                <div
-                  className="icon"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => setIsPassword(true)}
-                >
-                  <i className="fa-solid fa-eye"></i>
-                </div>
-              )}
+              <div className="icon">
+                {isPassword ? (
+                  <i
+                    className="fa-solid fa-eye-slash"
+                    onClick={() => setIsPassword(false)}
+                  ></i>
+                ) : (
+                  <i className="fa-solid fa-eye"      onClick={() => setIsPassword(false)}></i>
+                )}
+              </div>
             </div>
           </div>
 

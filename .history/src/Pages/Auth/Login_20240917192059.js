@@ -13,7 +13,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isPassword, setIsPassword] = useState(true);
+  const [isPassword ,setIsPassword ] = useState(true)
 
   const payload = {
     email,
@@ -57,29 +57,15 @@ const Login = () => {
             <p>Password :</p>
             <div className="field-div">
               <input
-                type={isPassword ? "password" : "text"}
+                type={isPassword}
                 placeholder={"Enter your password"}
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
                 required={true}
               />
-              {isPassword ? (
-                <div
-                  className="icon"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => setIsPassword(false)}
-                >
-                  <i className="fa-solid fa-eye-slash"></i>
-                </div>
-              ) : (
-                <div
-                  className="icon"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => setIsPassword(true)}
-                >
-                  <i className="fa-solid fa-eye"></i>
-                </div>
-              )}
+              <div className="icon">
+                <i className="fa-solid fa-eye-slash"></i>
+              </div>
             </div>
           </div>
 
