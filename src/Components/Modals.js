@@ -1,9 +1,12 @@
 /** @format */
-
 import { Offcanvas, Modal } from "react-bootstrap";
 import { userAvatar, verticalLogo } from "../assest";
 import { useLocation, useNavigate } from "react-router-dom";
 import { sidebarLinks } from "../constant/constant";
+import { useEffect, useState } from "react";
+import { getApi, postApi, putApi } from "../Repository/Api";
+import endPoints from "../Repository/apiConfig";
+import { ClipLoader } from "react-spinners";
 
 const MobileBar = ({ show, handleClose }) => {
   const { pathname } = useLocation();
@@ -95,7 +98,71 @@ const EditNotification = ({ show, handleClose }) => {
   );
 };
 
-const EditSupport = ({ show, handleClose, isEdit }) => {
+const EditSupport = ({ show, handleClose, isEdit, fetchHandler, id }) => {
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [website, setWebsite] = useState("");
+  const [website1, setWebsite1] = useState("");
+  const [desc, setDesc] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [prevData, setPrevData] = useState({});
+
+  const payload = {
+    mobileNumber,
+    email,
+    address,
+    website,
+    website1,
+    desc,
+  };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    const additionalFunctions = [handleClose, fetchHandler];
+
+    if (isEdit) {
+      putApi(endPoints.help.edit(id), payload, {
+        successMsg: "Updated !",
+        additionalFunctions,
+        setLoading,
+      });
+    } else {
+      postApi(endPoints.help.create, payload, {
+        successMsg: "Success !",
+        additionalFunctions,
+        setLoading,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (show && id && isEdit) {
+      getApi(endPoints.help.getById(id), {
+        setResponse: setPrevData,
+      });
+    }
+  }, [show, id, isEdit]);
+
+  useEffect(() => {
+    if (isEdit && prevData && show) {
+      const item = prevData?.data;
+      setMobileNumber(item?.mobileNumber);
+      setEmail(item?.email);
+      setAddress(item?.address);
+      setWebsite(item?.website);
+      setWebsite1(item?.website1);
+      setDesc(item?.desc);
+    } else {
+      setAddress("");
+      setMobileNumber("");
+      setEmail("");
+      setWebsite("");
+      setWebsite1("");
+      setDesc("");
+    }
+  }, [isEdit, prevData, show]);
+
   return (
     <Modal
       show={show}
@@ -113,25 +180,127 @@ const EditSupport = ({ show, handleClose, isEdit }) => {
           <i className="fa-solid fa-xmark" onClick={handleClose}></i>
         </div>
         <section className="update-profile-section space-bg">
+          <form onSubmit={submitHandler}>
+            <div className="flexbox-container">
+              <div className="input-div">
+                <p>Mobile No</p>
+                <input
+                  type={"tel"}
+                  onChange={(e) => setMobileNumber(e.target.value)}
+                  value={mobileNumber}
+                />
+              </div>
+              <div className="input-div">
+                <p>Email</p>
+                <input
+                  type={"email"}
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                />
+              </div>
+              <div className="input-div">
+                <p>Address</p>
+                <input
+                  type={"text"}
+                  onChange={(e) => setAddress(e.target.value)}
+                  value={address}
+                />
+              </div>
+
+              <div className="input-div">
+                <p>Website</p>
+                <input
+                  type={"text"}
+                  onChange={(e) => setWebsite(e.target.value)}
+                  value={website}
+                />
+              </div>
+
+              <div className="input-div">
+                <p>Another Website</p>
+                <input
+                  type={"text"}
+                  onChange={(e) => setWebsite1(e.target.value)}
+                  value={website1}
+                />
+              </div>
+            </div>
+            <div className="input-div">
+              <p>Description</p>
+              <textarea
+                onChange={(e) => setDesc(e.target.value)}
+                value={desc}
+              />
+            </div>
+
+            <button className="submit-btn">
+              {loading ? (
+                <ClipLoader color="#fff" />
+              ) : isEdit ? (
+                "Update"
+              ) : (
+                "Create new"
+              )}
+            </button>
+          </form>
+        </section>
+      </Modal.Body>
+    </Modal>
+  );
+};
+
+const ViewSupport = ({ show, handleClose, id }) => {
+  const [data, setData] = useState({});
+
+  useEffect(() => {
+    if (show && id) {
+      getApi(endPoints.help.getById(id), {
+        setResponse: setData,
+      });
+    }
+  }, [id, show]);
+
+  return (
+    <Modal
+      show={show}
+      onHide={handleClose}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Body className="my-modal edit-help-support-mod">
+        <div className="head">
+          <p className="title"></p>
+          <i className="fa-solid fa-xmark" onClick={handleClose}></i>
+        </div>
+        <section className="update-profile-section space-bg">
           <form>
             <div className="flexbox-container">
               <div className="input-div">
                 <p>Mobile No</p>
-                <input type={"text"} />
+                <p className="default-value">{data?.data?.mobileNumber}</p>
               </div>
               <div className="input-div">
                 <p>Email</p>
-                <input type={"text"} />
+                <p className="default-value">{data?.data?.email}</p>{" "}
               </div>
               <div className="input-div">
                 <p>Address</p>
-                <input type={"text"} />
+                <p className="default-value">{data?.data?.address}</p>
+              </div>
+              <div className="input-div">
+                <p>Website</p>
+                <p className="default-value">{data?.data?.website}</p>
+              </div>
+              <div className="input-div">
+                <p>Another Website</p>
+                <p className="default-value">{data?.data?.website1}</p>
               </div>
             </div>
-
-            <button className="submit-btn">
-              {isEdit ? "Update" : "Create new"}
-            </button>
+            <div className="input-div">
+              <p>Description</p>{" "}
+              <p className="default-value">{data?.data?.desc}</p>
+            </div>
           </form>
         </section>
       </Modal.Body>
@@ -176,4 +345,4 @@ const EditFaq = ({ show, handleClose }) => {
   );
 };
 
-export { MobileBar, EditNotification, EditSupport, EditFaq };
+export { MobileBar, EditNotification, EditSupport, EditFaq, ViewSupport };

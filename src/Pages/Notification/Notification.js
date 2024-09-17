@@ -6,7 +6,6 @@ import {
   CustomLoader,
   SectionHeading,
 } from "../../Components/HelpingComponent";
-import { EditNotification } from "../../Components/Modals";
 import TableLayout from "../../Components/TableLayout";
 import HOC from "../../Layouts/HOC";
 import { deleteApi, getApi } from "../../Repository/Api";
@@ -14,7 +13,6 @@ import endPoints from "../../Repository/apiConfig";
 
 const Notification = () => {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -22,6 +20,7 @@ const Notification = () => {
     deleteApi(endPoints.notifications.remove(id), {
       setLoading,
       additionalFunctions: [fetchHandler],
+      successMsg: "Removed !",
     });
   };
 
@@ -36,10 +35,11 @@ const Notification = () => {
     fetchHandler();
   }, []);
 
-  const thead = ["Sno", "Title", "Content", "Status", "Actions"];
+  const thead = ["Sno", "Recipient", "Title", "Content", "Status", "Actions"];
 
   const tbody = data?.data?.map((i, index) => [
     `#${index + 1}`,
+    i?.recipient?.fullName?.length > 0 ? i?.recipient?.fullName : i?.email,
     i?.title,
     i?.content,
     i?.status === "unread" ? (
@@ -48,7 +48,6 @@ const Notification = () => {
       <span className="read-status">Read</span>
     ),
     <div className="table-actions">
-      <i className="fa-solid fa-pen" onClick={() => setOpen(true)}></i>
       <i
         className="fa-regular fa-trash-can"
         onClick={() => removeNotifications(i?._id)}
@@ -60,7 +59,6 @@ const Notification = () => {
   return (
     <section className="notification-page">
       {loading && <CustomLoader />}
-      <EditNotification show={open} handleClose={() => setOpen(false)} />
       <SectionHeading title={"Notification"} />
 
       <div className="table-layout mt-3">
@@ -75,6 +73,8 @@ const Notification = () => {
             </button>
             <select>
               <option>Filter</option>
+              <option>Read</option>
+              <option>Unread</option>
             </select>
           </div>
         </div>

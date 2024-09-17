@@ -108,4 +108,7 @@
     max-width: 100%;
     width: 100%;
   }
+  .edit-help-support-mod .flexbox-container .input-div{
+    width: 100%;
+  }
 }

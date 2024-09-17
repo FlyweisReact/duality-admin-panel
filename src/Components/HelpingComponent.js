@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Select from "react-select";
 
 const LoginInput = ({
   label,
@@ -114,15 +115,18 @@ const CustomPagination = ({
   };
   return (
     <div className="pagination">
-      <button onClick={() => prevPage()}>
-        {" "}
-        <i className="fa-solid fa-caret-left"></i>{" "}
-      </button>
+      {hasPrevPage && (
+        <button onClick={() => prevPage()}>
+          <i className="fa-solid fa-caret-left"></i>{" "}
+        </button>
+      )}
+
       <button className="active"> {currentPage} </button>
-      <button onClick={() => nextPage()}>
-        {" "}
-        <i className="fa-solid fa-caret-right"></i>{" "}
-      </button>
+      {hasNextPage && (
+        <button onClick={() => nextPage()}>
+          <i className="fa-solid fa-caret-right"></i>{" "}
+        </button>
+      )}
     </div>
   );
 };
@@ -135,4 +139,28 @@ const CustomLoader = () => {
   );
 };
 
-export { LoginInput, OtpInput, BackBtn, SectionHeading, CustomPagination ,CustomLoader };
+const ReactSelect = ({ options, setValue, value, inputValue, placeholder }) => {
+  return (
+    <Select
+      value={value}
+      options={options}
+      placeholder={placeholder}
+      onChange={(e) => setValue(e)}
+      onInputChange={(input) => {
+        if (inputValue) {
+          inputValue(input);
+        }
+      }}
+    />
+  );
+};
+
+export {
+  LoginInput,
+  OtpInput,
+  BackBtn,
+  SectionHeading,
+  CustomPagination,
+  CustomLoader,
+  ReactSelect,
+};

@@ -64,7 +64,7 @@ const routes = [
     element: <UpdateUserPost />,
   },
   {
-    path: "/users/friend-requests",
+    path: "/users/friend-requests/:id",
     element: <FriendRequest />,
   },
   {

@@ -572,7 +572,7 @@ table tbody tr:nth-child(even) {
   height: 150px;
   border-radius: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: top;
 }
 .update-profile-section .update-img .content {
   flex: 1;
@@ -622,6 +622,18 @@ table tbody tr:nth-child(even) {
 }
 .update-profile-section form .input-div p {
   font-size: var(--font-size-small);
+}
+.update-profile-section form .input-div p.default-value{
+  width: 100%;
+  padding: 10px 20px;
+  font-size: var(--font-size-small);
+  background-color: #dfdfdf;
+  border: 1px solid #d9d9d9;
+  outline: none;
+  color: black;
+  font-weight: 600;
+  border-radius: 5px;
+
 }
 .update-profile-section form .input-div input {
   width: 100%;
@@ -817,8 +829,8 @@ table tbody tr:nth-child(even) {
 .user-profile-section .edit-section .img-container img {
   width: 130px;
   height: 130px;
-  object-fit: contain;
-  object-position: center;
+  object-fit: cover;
+  object-position: top;
   border-radius: 100%;
 }
 .user-profile-section .edit-section p {
@@ -866,14 +878,19 @@ table tbody tr:nth-child(even) {
 }
 .user-profile-section .edit-section .btn-container button.photo {
   border-radius: 0px 0px 0px 20px;
-  border: 1px solid #0fbbfa;
-  background-color: #0fbbfa;
-  color: #fff;
+  border: none;
+  background-color: #fff;
 }
+
 .user-profile-section .edit-section .btn-container button.video {
   border-radius: 0px 0px 20px 0px;
   border: none;
   background-color: #fff;
+}
+.user-profile-section .edit-section .btn-container button.active {
+  border: 1px solid #0fbbfa;
+  color: #fff;
+  background-color: #0fbbfa;
 }
 .user-profile-section .edit-section .btn-container button {
   width: 50%;
@@ -938,7 +955,14 @@ table tbody tr:nth-child(even) {
   width: 100%;
   object-fit: cover;
   object-position: center;
-  /* cursor: pointer; */
+  position: relative;
+  border-radius: 10px;
+  z-index: 1;
+}
+.user-profile-section .remaining .photos-collection video.main-img{
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
   position: relative;
   border-radius: 10px;
   z-index: 1;
@@ -1062,7 +1086,7 @@ table tbody tr:nth-child(even) {
 .request-box {
   width: 338px;
   display: flex;
-  justify-content: space-evenly;
+  gap: 20px;
   align-items: center;
 }
 .request-box p {
@@ -1071,7 +1095,6 @@ table tbody tr:nth-child(even) {
 .request-box .thumb-img {
   width: 40px;
   height: 40px;
-  object-fit: cover;
   object-position: center;
   border-radius: 100%;
 }
@@ -1186,9 +1209,6 @@ table tbody tr:nth-child(even) {
   padding: 20px;
 }
 
-.edit-help-support-mod .flexbox-container {
-  justify-content: space-evenly;
-}
 .edit-help-support-mod .flexbox-container .input-div {
   width: 30%;
 }
@@ -1279,4 +1299,12 @@ table tbody tr:nth-child(even) {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.radio-div p {
+  margin: 0;
+  font-size: var(--font-size-small);
+}
+.radio-div .radio-btn {
+  margin-top: 10px;
 }

@@ -14,7 +14,7 @@ const endPoints = {
     }) =>
       `/admin/searchUser?userType=&page=${page}&limit=${limit}&search=${search}&status=${status}&isVerified=${isVerified}`,
     updateStatus: (id) => `/admin/users/${id}/update-verification-status`,
-    getUserById: (id) => `/admin/profile/${id}`,
+      getUserById: (id) => `/admin/profile/${id}`,
     updateUserById: (id) => `/admin/update/user/${id}`,
     uploadUserPic: (id) => `/admin/upload-profile-picture/${id}`,
     removeUser: (id) => `/admin/users/profile/delete/${id}`,

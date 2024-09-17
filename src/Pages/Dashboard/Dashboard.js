@@ -1,6 +1,6 @@
 /** @format */
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   trendingImg1,
   trendingImg2,
@@ -14,8 +14,22 @@ import {
 } from "../../Components/Cards/AllCards";
 import TableLayout from "../../Components/TableLayout";
 import HOC from "../../Layouts/HOC";
+import { getApi } from "../../Repository/Api";
+import endPoints from "../../Repository/apiConfig";
 
 const Dashboard = () => {
+  const [count, setCount] = useState({});
+
+  const fetchCounts = () => {
+    getApi(endPoints.dashboard.userCount, {
+      setResponse: setCount,
+    });
+  };
+
+  useEffect(() => {
+    fetchCounts();
+  }, []);
+
   const blockedUserHead = ["Sr.No", "User Name", "Blocked", "Reported content"];
   const blockedUserData = [
     [1, "Tanisq Rawat", "5 Times", "None"],
@@ -30,29 +44,20 @@ const Dashboard = () => {
   return (
     <section className="dashboard">
       <div className="flexbox-container">
-        <DashboardCard
-          title={"Total Users"}
-          count={"2000"}
-          percentage={"+6.08%"}
-          isUp={true}
-        />
+        <DashboardCard title={"Total Users"} count={count?.data?.users} />
         <DashboardCard
           title={"Active Users"}
-          count={"1,500"}
-          percentage={"+6.08%"}
-          isUp={true}
+          count={count?.data?.activeUser}
           bg={"#D0FFE0"}
         />
         <DashboardCard
           title={"Inactive Users"}
-          count={"300"}
-          percentage={"-6.08%"}
-          isUp={false}
+          count={count?.data?.inactiveUser}
           bg={"#E6E6E6"}
         />
         <DashboardCard
           title={"Blocked/Reported Users"}
-          count={"200"}
+          count={count?.data?.blockedUser}
           bg={"#FFD0D1"}
         />
       </div>

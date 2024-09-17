@@ -1,26 +1,60 @@
 /** @format */
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { userAvatar } from "../../assest";
-import { BackBtn, CustomPagination } from "../../Components/HelpingComponent";
+import {
+  BackBtn,
+  CustomLoader,
+} from "../../Components/HelpingComponent";
 import HOC from "../../Layouts/HOC";
+import { useNavigate, useParams } from "react-router-dom";
+import { getApi } from "../../Repository/Api";
+import endPoints from "../../Repository/apiConfig";
+
+const options = [
+  {
+    value: "friends",
+    label: "Friends",
+  },
+  {
+    value: "request",
+    label: "Friends Request",
+  },
+];
 
 const FriendRequest = () => {
-  const [type, setType] = useState("request");
-  const options = [
-    {
-      value: "friends",
-      label: "Friends",
-    },
-    {
-      value: "request",
-      label: "Friends Request",
-    },
-  ];
-  const emptyArray = new Array(15).fill(null);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [type, setType] = useState("friends");
+  const [requests, setRequests] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [friends, setFriends] = useState({});
+
+  const fetchRequests = useCallback(() => {
+    getApi(endPoints.freindRequest.getbyUserId(id), {
+      setResponse: setRequests,
+      setLoading,
+    });
+  }, [id]);
+
+  const allFriends = useCallback(() => {
+    getApi(endPoints.friends.getByUserId(id), {
+      setResponse: setFriends,
+      setLoading,
+    });
+  }, [id]);
+
+  useEffect(() => {
+    fetchRequests();
+  }, [fetchRequests]);
+
+  useEffect(() => {
+    allFriends();
+  }, [allFriends]);
 
   return (
     <section className="friend-requests-page">
+      {loading && <CustomLoader />}
       <BackBtn />
 
       <ul className="friend-request-tabs mt-4">
@@ -46,26 +80,22 @@ const FriendRequest = () => {
           </div>
 
           <div className="flexbox-container mt-4 mb-4">
-            {emptyArray.map((_, index) => (
-              <div className="request-box" key={`request${index}`}>
+            {requests?.data?.map((i, index) => (
+              <div
+                className="request-box"
+                key={`request${index}`}
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate(`/users/${i?.requester?._id}`)}
+              >
                 <img src={userAvatar} className="thumb-img" alt="" />
                 <div className="content">
-                  <p className="title">Nisa Sance</p>
-                  <p className="date">Today 14.3PM</p>
+                  <p className="title"> {i?.requester?.fullName} </p>
+                  <p className="date"> {i?.sentAt?.slice(0, 10)} </p>
                 </div>
-                <div className="action-btn">
-                  <button>
-                    <i className="fa-solid fa-check"></i>
-                  </button>
-                  <button>
-                    <i className="fa-solid fa-xmark"></i>
-                  </button>
-                </div>
+                <div className="action-btn"></div>
               </div>
             ))}
           </div>
-
-          <CustomPagination />
         </div>
       ) : (
         <div className="friend-request-data-container">
@@ -78,24 +108,24 @@ const FriendRequest = () => {
           </div>
 
           <div className="flexbox-container mt-4 mb-4">
-            {emptyArray.map((_, index) => (
-              <div className="request-box" key={`request${index}`}>
-                <img src={userAvatar} className="thumb-img" alt="" />
+            {friends?.data?.[0]?.users?.map((i, index) => (
+              <div className="request-box" key={`friends${index}`}>
+                <img src={i?.user?.image} className="thumb-img" alt="" />
                 <div className="content">
-                  <p className="title">Mehek Nanwani</p>
-                  <p className="date">Today 14.3PM</p>
+                  <p className="title"> {i?.user?.fullName} </p>
+                  <p className="date"> {i?.dateJoined?.slice(0, 10)} </p>
                 </div>
                 <div className="action-btn">
-                  <button className="view">View</button>
-                  <button className="remove">
-                    <i className="fa-regular fa-trash-can"></i>
+                  <button
+                    className="view"
+                    onClick={() => navigate(`/users/${i?.user?._id}`)}
+                  >
+                    View
                   </button>
                 </div>
               </div>
             ))}
           </div>
-
-          <CustomPagination />
         </div>
       )}
     </section>

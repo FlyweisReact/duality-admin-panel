@@ -12,24 +12,9 @@ import { Form } from "react-bootstrap";
 import { Dropdown } from "antd";
 import { Link } from "react-router-dom";
 import { DashboardCard } from "../../Components/Cards/AllCards";
-import { getApi, putApi } from "../../Repository/Api";
+import { deleteApi, getApi, putApi } from "../../Repository/Api";
 import endPoints from "../../Repository/apiConfig";
 import { debouncedSetQuery } from "../../utils/utils";
-
-const items = [
-  {
-    label: <Link to="/users/MiyaDas">View User</Link>,
-    key: "0",
-  },
-  {
-    label: <Link to="/edit-user/Miya">Edit User</Link>,
-    key: "1",
-  },
-  {
-    label: <span>Delete User</span>,
-    key: "2",
-  },
-];
 
 const Users = () => {
   const [data, setData] = useState({});
@@ -40,6 +25,14 @@ const Users = () => {
   const [isVerified, setIsVerified] = useState(null);
   const [loading, setLoading] = useState(false);
   const [bg, setBg] = useState("#e5ecf6");
+
+  const removeUserHandler = (id) => {
+    deleteApi(endPoints.users.removeUser(id), {
+      additionalFunctions: [fetchCounts, fetchHandler],
+      successMsg: "Removed !",
+      setLoading,
+    });
+  };
 
   const updateUserStatus = (data) => {
     const payload = {
@@ -109,11 +102,39 @@ const Users = () => {
       type="switch"
       id="custom-switch"
       checked={!i?.isVerified}
-      onChange={(e) => updateUserStatus(i)}
+      onChange={() => updateUserStatus(i)}
     />,
     <Dropdown
       menu={{
-        items,
+        items: [
+          {
+            label: (
+              <Link to={`/users/${i?._id}`} style={{ color: "#161D6F" }}>
+                View User
+              </Link>
+            ),
+            key: "0",
+          },
+          {
+            label: (
+              <Link to={`/edit-user/${i?._id}`} style={{ color: "#161D6F" }}>
+                Edit User
+              </Link>
+            ),
+            key: "1",
+          },
+          {
+            label: (
+              <span
+                style={{ color: "#B8001F" }}
+                onClick={() => removeUserHandler(i?._id)}
+              >
+                Delete User
+              </span>
+            ),
+            key: "2",
+          },
+        ],
       }}
       trigger={["click"]}
     >
@@ -182,14 +203,6 @@ const Users = () => {
               />
               <i className="fa-solid fa-magnifying-glass"></i>
             </div>
-
-            <select>
-              <option>Filter</option>
-              <option>Date</option>
-              <option>User Name</option>
-              <option>Active</option>
-              <option>In-active</option>
-            </select>
           </div>
         </div>
 

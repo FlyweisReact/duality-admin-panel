@@ -10,6 +10,7 @@ import {
   termIcon,
   privacyIcon,
   faqIcon,
+  ticketSvg,
 } from "../assest";
 
 export const sidebarLinks = [

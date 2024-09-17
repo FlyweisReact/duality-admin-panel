@@ -1,53 +1,107 @@
 /** @format */
 
-import React from "react";
-import { BackBtn } from "../../Components/HelpingComponent";
+import React, { useCallback, useEffect, useState } from "react";
+import { BackBtn, CustomLoader } from "../../Components/HelpingComponent";
 import HOC from "../../Layouts/HOC";
-import { editUserImg, userPhoto1, userPhoto2 } from "../../assest";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { deleteApi, getApi } from "../../Repository/Api";
+import endPoints from "../../Repository/apiConfig";
 
 const UserProfile = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const [data, setData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [posts, setPosts] = useState({});
+  const [type, setType] = useState("photos");
+
+  const removePostHandler = (id) => {
+    deleteApi(endPoints.posts.removePost(id), {
+      setLoading,
+      additionalFunctions: [fetchData, fetchPosts],
+      successMsg: "Success !",
+    });
+  };
+
+  const fetchData = useCallback(() => {
+    getApi(endPoints.users.getUserById(id), {
+      setResponse: setData,
+      setLoading,
+    });
+  }, [id]);
+
+  const fetchPosts = useCallback(() => {
+    getApi(endPoints.posts.getPostByUserId(id), {
+      setResponse: setPosts,
+    });
+  }, [id]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
+
+  // Filter out the posts that have images
+  const allImagePosts = posts?.data?.filter((i) => i?.image);
+  const allVideoPosts = posts?.data?.filter((i) => i?.video);
+
   return (
     <section className="user-profile-page">
+      {loading && <CustomLoader />}
       <BackBtn />
       <div className="user-profile-section">
         <div className="edit-section">
           <div className="edit-icon">
-            <Link to={"/edit-user/Miya"}>
+            <Link to={`/edit-user/${id}`}>
               <i className="fa-solid fa-pen"></i>
             </Link>
           </div>
           <div className="img-container">
-            <img src={editUserImg} alt="" />
+            <img src={data?.data?.user?.image} alt="" />
           </div>
-          <p className="heading mt-2 mb-2">Mehek Nanwani</p>
+          <p className="heading mt-2 mb-2"> {data?.data?.user?.fullName} </p>
           <ul>
-            <li>30 Friends</li>
-            <li>3 Posts</li>
+            <li>{data?.data?.user?.friends?.[0]?.users?.length} Friends</li>
+            <li>
+              {" "}
+              {type === "photos"
+                ? allImagePosts?.length
+                : allVideoPosts?.length}{" "}
+              Posts
+            </li>
           </ul>
 
-          <p className="sub-heading mt-2 mb-1">macster@prettysky.link</p>
-          <p className="sub-heading mb-2">+91 93072059670</p>
+          <p className="sub-heading mt-2 mb-1"> {data?.data?.user?.email} </p>
+          <p className="sub-heading mb-2"> {data?.data?.user?.mobileNumber} </p>
 
           <button
             className="request-btn"
-            onClick={() => navigate("/users/friend-requests")}
+            onClick={() => navigate(`/users/friend-requests/${id}`)}
           >
             View Friends & Requests
           </button>
           <div className="btn-container">
-            <button className="photo">Photo</button>
-            <button className="video">Video</button>
+            <button
+              onClick={() => setType("photos")}
+              className={`photo ${type === "photos" ? "active" : ""}`}
+              type="button"
+            >
+              Photo
+            </button>
+            <button
+              onClick={() => setType("video")}
+              className={`video ${type === "video" ? "active" : ""}`}
+              type="button"
+            >
+              Video
+            </button>
           </div>
         </div>
         <div className="remaining">
           <div className="filter-section">
-            <div className="search-container">
-              <input type="search" placeholder="Search User" />
-              <i className="fa-solid fa-magnifying-glass"></i>
-            </div>
-
             <select>
               <option>Filter</option>
               <option>Most recent</option>
@@ -58,30 +112,41 @@ const UserProfile = () => {
           </div>
 
           <div className="flexbox-container mt-4">
-            <div className="photos-collection">
-              <img src={userPhoto2} alt="" />{" "}
-              <div className="actions">
-                <div className="icon">
-                  <i
-                    className="fa-solid fa-pen"
-                    onClick={() => navigate("/users/update-post/1")}
-                  ></i>
-                  <i className="fa-solid fa-trash-can"></i>
-                </div>
-              </div>
-            </div>
-            <div className="photos-collection">
-              <img src={userPhoto1} alt="" />{" "}
-              <div className="actions">
-                <div className="icon">
-                  <i
-                    className="fa-solid fa-pen"
-                    onClick={() => navigate("/users/update-post/1")}
-                  ></i>
-                  <i className="fa-solid fa-trash-can"></i>
-                </div>
-              </div>
-            </div>
+            {type === "photos"
+              ? allImagePosts?.map((i, index) => (
+                  <div className="photos-collection" key={`photos${index}`}>
+                    <img src={i?.image} alt="" />{" "}
+                    <div className="actions">
+                      <div className="icon">
+                        <a href={i?.image} target="_blank" rel="noreferrer">
+                          <i className="fa-solid fa-eye"></i>
+                        </a>
+                        <i
+                          className="fa-solid fa-trash-can"
+                          onClick={() => removePostHandler(i?._id)}
+                        ></i>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              : allVideoPosts?.map((i, index) => (
+                  <div className="photos-collection" key={`video${index}`}>
+                    <video className="main-img">
+                      <source src={i?.video} type="video/mp4" />
+                    </video>
+                    <div className="actions">
+                      <div className="icon">
+                        <a href={i?.video} target="_blank" rel="noreferrer">
+                          <i className="fa-solid fa-eye"></i>
+                        </a>
+                        <i
+                          className="fa-solid fa-trash-can"
+                          onClick={() => removePostHandler(i?._id)}
+                        ></i>
+                      </div>
+                    </div>
+                  </div>
+                ))}
           </div>
         </div>
       </div>
