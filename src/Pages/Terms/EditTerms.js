@@ -1,12 +1,55 @@
 /** @format */
 
-import React from "react";
-import { BackBtn, SectionHeading } from "../../Components/HelpingComponent";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  BackBtn,
+  CustomLoader,
+  SectionHeading,
+} from "../../Components/HelpingComponent";
 import HOC from "../../Layouts/HOC";
+import { useParams } from "react-router-dom";
+import { getApi, putApi } from "../../Repository/Api";
+import endPoints from "../../Repository/apiConfig";
 
 const EditTerms = () => {
+  const { id } = useParams();
+  const [response, setResponse] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [content, setContent] = useState("");
+
+  const payload = {
+    content,
+  };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    putApi(endPoints.terms.edit(id), payload, {
+      successMsg: "Updated !",
+      setLoading,
+      additionalFunctions: [fetchHandler],
+    });
+  };
+
+  const fetchHandler = useCallback(() => {
+    getApi(endPoints.terms.getById(id), {
+      setResponse,
+      setLoading,
+    });
+  }, [id]);
+
+  useEffect(() => {
+    fetchHandler();
+  }, [fetchHandler]);
+
+  useEffect(() => {
+    if (response) {
+      setContent(response?.data?.content);
+    }
+  }, [response]);
+
   return (
     <div>
+      {loading && <CustomLoader />}
       <div
         className="flexbox-container"
         style={{ gap: "10px", alignItems: "center" }}
@@ -17,25 +60,19 @@ const EditTerms = () => {
 
       <section className="update-profile-section space-bg">
         <p className="table-heading mb-5">Edit terms and condition</p>
-        <form>
+        <form onSubmit={submitHandler}>
           <div className="input-div">
-            <p>Title</p>
-            <input
-              type={"text"}
-              placeholder="Enter Title"
-              value={"Sed ut perspiciatis"}
-            />
-          </div>
-          <div className="input-div">
-            <p>Discription</p>
+            <p>Description</p>
             <textarea
+              required
               placeholder="Write description Here."
-              value={
-                "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui "
-              }
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
             />
           </div>
-          <button className="submit-btn">Update</button>
+          <button className="submit-btn" type="submit">
+            Update
+          </button>
         </form>
       </section>
     </div>

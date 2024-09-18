@@ -1,13 +1,23 @@
 /** @format */
 
-import React from "react";
-import { userAvatar, verticalLogo } from "../assest";
+import React, { useEffect, useState } from "react";
+import { verticalLogo } from "../assest";
 import { useLocation, useNavigate } from "react-router-dom";
 import { sidebarLinks } from "../constant/constant";
+import { getApi } from "../Repository/Api";
+import endPoints from "../Repository/apiConfig";
+import { LogoutHandler } from "../utils/utils";
 
 const Sidebar = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const [profile, setProfile] = useState({});
+
+  useEffect(() => {
+    getApi(endPoints.auth.myProfile, {
+      setResponse: setProfile,
+    });
+  }, []);
 
   return (
     <section className="sidebar hide-layout">
@@ -30,17 +40,17 @@ const Sidebar = () => {
 
       <div className="admin-detail">
         <div className="profile" onClick={() => navigate("/update-profile")}>
-          <img src={userAvatar} alt="" />
+          <img src={profile?.data?.user?.image} alt="" />
           <div>
-            <p className="name">Gustavo Xavier</p>
+            <p className="name"> {profile?.data?.user?.fullName} </p>
             <p className="admin-badge">Admin</p>
           </div>
         </div>
 
         <div
           className="log-out"
-          onClick={() => navigate("/")}
           style={{ cursor: "pointer" }}
+          onClick={() => LogoutHandler(navigate)}
         >
           <i className="fa-solid fa-right-from-bracket"></i>
           <p>Log out</p>

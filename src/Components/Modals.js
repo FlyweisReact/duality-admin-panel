@@ -1,16 +1,25 @@
 /** @format */
 import { Offcanvas, Modal } from "react-bootstrap";
-import { userAvatar, verticalLogo } from "../assest";
+import { verticalLogo } from "../assest";
 import { useLocation, useNavigate } from "react-router-dom";
 import { sidebarLinks } from "../constant/constant";
 import { useEffect, useState } from "react";
 import { getApi, postApi, putApi } from "../Repository/Api";
 import endPoints from "../Repository/apiConfig";
 import { ClipLoader } from "react-spinners";
+import { LogoutHandler } from "../utils/utils";
 
 const MobileBar = ({ show, handleClose }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const [profile, setProfile] = useState({});
+
+  useEffect(() => {
+    getApi(endPoints.auth.myProfile, {
+      setResponse: setProfile,
+    });
+  }, []);
+
   return (
     <Offcanvas show={show} onHide={handleClose}>
       <Offcanvas.Header closeButton>
@@ -41,14 +50,14 @@ const MobileBar = ({ show, handleClose }) => {
               className="profile"
               onClick={() => navigate("/update-profile")}
             >
-              <img src={userAvatar} alt="" />
+              <img src={profile?.data?.user?.image} alt="" />
               <div>
-                <p className="name">Gustavo Xavier</p>
+                <p className="name"> {profile?.data?.user?.fullName} </p>
                 <p className="admin-badge">Admin</p>
               </div>
             </div>
 
-            <div className="log-out">
+            <div className="log-out" onClick={() => LogoutHandler(navigate)}>
               <i className="fa-solid fa-right-from-bracket"></i>
               <p>Log out</p>
             </div>
@@ -308,7 +317,41 @@ const ViewSupport = ({ show, handleClose, id }) => {
   );
 };
 
-const EditFaq = ({ show, handleClose }) => {
+const EditFaq = ({ show, handleClose, id, fetchHandler }) => {
+  const [response, setResponse] = useState({});
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (show && id) {
+      getApi(endPoints.faq.getbyId(id), {
+        setResponse,
+      });
+    }
+  }, [show, id]);
+
+  useEffect(() => {
+    if (response) {
+      setQuestion(response?.data?.question);
+      setAnswer(response?.data?.answer);
+    }
+  }, [response]);
+
+  const payload = {
+    answer,
+    question,
+    userType: "ADMIN",
+  };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    putApi(endPoints.faq.edit(id), payload, {
+      setLoading,
+      additionalFunctions: [handleClose, fetchHandler],
+    });
+  };
+
   return (
     <Modal
       show={show}
@@ -323,21 +366,29 @@ const EditFaq = ({ show, handleClose }) => {
           <i className="fa-solid fa-xmark" onClick={handleClose}></i>
         </div>
         <section className="update-profile-section space-bg">
-          <form>
+          <form onSubmit={submitHandler}>
             <div className="input-div">
               <p>Question</p>
               <input
                 type={"text"}
-                value="Mauris id nibh eu fermentum mattis purus?"
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                required
               />
             </div>
 
             <div className="input-div">
               <p>Answer</p>
-              <textarea value="Nibh quisque suscipit fermentum netus nulla cras porttitor euismod nulla. Orci, dictumst nec aliquet id ullamcorper venenatis. " />
+              <textarea
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+                required
+              />
             </div>
 
-            <button className="submit-btn">Update</button>
+            <button className="submit-btn">
+              {loading ? <ClipLoader color="#fff" /> : "Update"}
+            </button>
           </form>
         </section>
       </Modal.Body>
@@ -345,4 +396,117 @@ const EditFaq = ({ show, handleClose }) => {
   );
 };
 
-export { MobileBar, EditNotification, EditSupport, EditFaq, ViewSupport };
+const ViewFaq = ({ show, handleClose, id }) => {
+  const [response, setResponse] = useState({});
+
+  useEffect(() => {
+    if (show && id) {
+      getApi(endPoints.faq.getbyId(id), {
+        setResponse,
+      });
+    }
+  }, [show, id]);
+
+  return (
+    <Modal
+      show={show}
+      onHide={handleClose}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Body className="my-modal edit-help-support-mod">
+        <div className="head">
+          <p className="title">FAQ</p>
+          <i className="fa-solid fa-xmark" onClick={handleClose}></i>
+        </div>
+        <section className="update-profile-section space-bg">
+          <form>
+            <div className="input-div">
+              <p>Question</p>
+              <input
+                type={"text"}
+                defaultValue={response?.data?.question}
+                disabled
+              />
+            </div>
+
+            <div className="input-div">
+              <p>Answer</p>
+              <textarea defaultValue={response?.data?.answer} disabled />
+            </div>
+          </form>
+        </section>
+      </Modal.Body>
+    </Modal>
+  );
+};
+
+const QueryReply = ({ show, handleClose, fetchHandler, data, contactId }) => {
+  const [reply, setReply] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const payload = {
+    contactId,
+    reply,
+    messageId: data?._id,
+  };
+  const submitHandler = (e) => {
+    e.preventDefault();
+    postApi(endPoints.Queries.sendResponse, payload, {
+      successMsg: "Success !",
+      setLoading,
+      additionalFunctions: [handleClose, fetchHandler],
+    });
+  };
+
+  console.log(data);
+
+  return (
+    <Modal
+      show={show}
+      onHide={handleClose}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Body className="my-modal edit-help-support-mod">
+        <div className="head">
+          <p className="title">Give Response</p>
+          <i className="fa-solid fa-xmark" onClick={handleClose}></i>
+        </div>
+        <section className="update-profile-section space-bg">
+          <form onSubmit={submitHandler}>
+            <div className="input-div">
+              <p>Query</p>
+              <textarea disabled defaultValue={data?.message} />
+            </div>
+            <div className="input-div">
+              <p>Your Response</p>
+              <textarea
+                required
+                placeholder="Write here"
+                onChange={(e) => setReply(e.target.value)}
+                value={reply}
+              />
+            </div>
+
+            <button className="submit-btn" type="submit">
+              {loading ? <ClipLoader color="#fff" /> : "Submit"}
+            </button>
+          </form>
+        </section>
+      </Modal.Body>
+    </Modal>
+  );
+};
+
+export {
+  MobileBar,
+  EditNotification,
+  EditSupport,
+  EditFaq,
+  ViewSupport,
+  QueryReply,
+  ViewFaq,
+};

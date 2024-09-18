@@ -1,12 +1,28 @@
 /** @format */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MobileBar } from "../Components/Modals";
+import { getApi } from "../Repository/Api";
+import endPoints from "../Repository/apiConfig";
 
 const Navbar = () => {
-  const [show, setShow] = useState(false);
   const navigate = useNavigate();
+  const [show, setShow] = useState(false);
+  const [notification, setNotification] = useState({});
+
+  useEffect(() => {
+    getApi(endPoints.notifications.getAll, {
+      setResponse: setNotification,
+    });
+  }, []);
+
+  const filteredNotification = notification?.data?.filter(
+    (i) => i?.status?.toLowerCase() === "unread"
+  );
+
+  const notificationCount = filteredNotification?.length;
+
   return (
     <>
       <MobileBar show={show} handleClose={() => setShow(false)} />
@@ -15,18 +31,20 @@ const Navbar = () => {
           className="fa-solid fa-bars-staggered"
           onClick={() => setShow(true)}
         ></i>
-        <div className="search-container">
+        {/* <div className="search-container">
           <input type="search" placeholder="Search..." />
           <i className="fa-solid fa-magnifying-glass"></i>
-        </div>
-        <div
-          className="notification"
-          style={{ cursor: "pointer" }}
-          onClick={() => navigate("/notification")}
-        >
-          <i className="fa-regular fa-bell"></i>
-          <span className="count">3</span>
-        </div>
+        </div> */}
+        {notificationCount > 0 && (
+          <div
+            className="notification"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/notification")}
+          >
+            <i className="fa-regular fa-bell"></i>
+            <span className="count"> {notificationCount} </span>
+          </div>
+        )}
       </header>
     </>
   );

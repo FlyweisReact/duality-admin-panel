@@ -1,13 +1,18 @@
 /** @format */
 
 import React, { useState } from "react";
-import { BackBtn, SectionHeading } from "../../Components/HelpingComponent";
+import {
+  BackBtn,
+  CustomLoader,
+  SectionHeading,
+} from "../../Components/HelpingComponent";
 import HOC from "../../Layouts/HOC";
 import { postApi } from "../../Repository/Api";
 import endPoints from "../../Repository/apiConfig";
-import { ClipLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
 
 const CreatePolicy = () => {
+  const navigate = useNavigate();
   const [header, setHeader] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -20,11 +25,13 @@ const CreatePolicy = () => {
     postApi(endPoints.policy.create, payload, {
       successMsg: "Success !",
       setLoading,
+      additionalFunctions: [() => navigate(-1)],
     });
   };
 
   return (
     <div>
+      {loading && <CustomLoader />}
       <div
         className="flexbox-container"
         style={{ gap: "10px", alignItems: "center" }}
@@ -44,7 +51,7 @@ const CreatePolicy = () => {
             />
           </div>
           <button className="submit-btn" type="submit">
-            {loading ? <ClipLoader color="#fff" /> : "Create"}
+            Create
           </button>
         </form>
       </section>

@@ -15,6 +15,7 @@ const Notification = () => {
   const navigate = useNavigate();
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("");
 
   const removeNotifications = (id) => {
     deleteApi(endPoints.notifications.remove(id), {
@@ -37,7 +38,13 @@ const Notification = () => {
 
   const thead = ["Sno", "Recipient", "Title", "Content", "Status", "Actions"];
 
-  const tbody = data?.data?.map((i, index) => [
+  const filteredData = status
+    ? data?.data?.filter(
+        (i) => i?.status?.toLowerCase() === status?.toLowerCase()
+      )
+    : data?.data;
+
+  const tbody = filteredData?.map((i, index) => [
     `#${index + 1}`,
     i?.recipient?.fullName?.length > 0 ? i?.recipient?.fullName : i?.email,
     i?.title,
@@ -71,10 +78,10 @@ const Notification = () => {
             >
               Add Notification
             </button>
-            <select>
-              <option>Filter</option>
-              <option>Read</option>
-              <option>Unread</option>
+            <select onChange={(e) => setStatus(e.target.value)}>
+              <option value="">All</option>
+              <option value="read">Read</option>
+              <option value="unread">Unread</option>
             </select>
           </div>
         </div>

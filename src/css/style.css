@@ -540,10 +540,14 @@ table tbody tr:nth-child(even) {
   flex-wrap: wrap;
   margin-top: 10px;
 }
-.trending-photos .flex-container img {
+.trending-photos .flex-container img,
+.trending-photos .flex-container  video {
   max-width: 156px;
   width: 100%;
   border-radius: 10px;
+  border: 1px solid #ddd;
+  object-fit: cover;
+  object-position: center;
 }
 
 .back-arrow-btn {
@@ -623,7 +627,7 @@ table tbody tr:nth-child(even) {
 .update-profile-section form .input-div p {
   font-size: var(--font-size-small);
 }
-.update-profile-section form .input-div p.default-value{
+.update-profile-section form .input-div p.default-value {
   width: 100%;
   padding: 10px 20px;
   font-size: var(--font-size-small);
@@ -633,7 +637,6 @@ table tbody tr:nth-child(even) {
   color: black;
   font-weight: 600;
   border-radius: 5px;
-
 }
 .update-profile-section form .input-div input {
   width: 100%;
@@ -959,7 +962,7 @@ table tbody tr:nth-child(even) {
   border-radius: 10px;
   z-index: 1;
 }
-.user-profile-section .remaining .photos-collection video.main-img{
+.user-profile-section .remaining .photos-collection video.main-img {
   width: 100%;
   object-fit: cover;
   object-position: center;
@@ -1307,4 +1310,21 @@ table tbody tr:nth-child(even) {
 }
 .radio-div .radio-btn {
   margin-top: 10px;
+}
+
+.reply-msg {
+  background-color: #0484b3;
+  border: 1px solid #0484b3;
+  color: #fff;
+  font: 12px;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 150px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.message-box {
+  border: 1px solid #0484b3;
+  padding: 20px 10px;
 }

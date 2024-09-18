@@ -5,11 +5,13 @@ import { userAvatar } from "../../assest";
 import {
   BackBtn,
   CustomLoader,
+  CustomPagination,
 } from "../../Components/HelpingComponent";
 import HOC from "../../Layouts/HOC";
 import { useNavigate, useParams } from "react-router-dom";
 import { getApi } from "../../Repository/Api";
 import endPoints from "../../Repository/apiConfig";
+import { debouncedSetQuery } from "../../utils/utils";
 
 const options = [
   {
@@ -29,20 +31,31 @@ const FriendRequest = () => {
   const [requests, setRequests] = useState({});
   const [loading, setLoading] = useState(false);
   const [friends, setFriends] = useState({});
+  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState("");
+  const [friendsQuery, setFriendsQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchRequests = useCallback(() => {
-    getApi(endPoints.freindRequest.getbyUserId(id), {
+    getApi(endPoints.freindRequest.getbyUserId({ id, page, query }), {
       setResponse: setRequests,
       setLoading,
     });
-  }, [id]);
+  }, [id, page, query]);
 
   const allFriends = useCallback(() => {
-    getApi(endPoints.friends.getByUserId(id), {
-      setResponse: setFriends,
-      setLoading,
-    });
-  }, [id]);
+    getApi(
+      endPoints.friends.getByUserId({
+        id,
+        page: currentPage,
+        query: friendsQuery,
+      }),
+      {
+        setResponse: setFriends,
+        setLoading,
+      }
+    );
+  }, [id, friendsQuery, currentPage]);
 
   useEffect(() => {
     fetchRequests();
@@ -56,10 +69,10 @@ const FriendRequest = () => {
     <section className="friend-requests-page">
       {loading && <CustomLoader />}
       <BackBtn />
-
       <ul className="friend-request-tabs mt-4">
         {options.map((i, index) => (
           <li
+            key={`list${index}`}
             onClick={() => setType(i.value)}
             className={`${i.value === type ? "active" : ""}`}
           >
@@ -68,13 +81,16 @@ const FriendRequest = () => {
           </li>
         ))}
       </ul>
-
       {type === "request" ? (
         <div className="friend-request-data-container">
           <div className="head">
             <p className="heading">View Friend request</p>
             <div className="search-container">
-              <input type="search" placeholder="Search User" />
+              <input
+                type="search"
+                placeholder="Search User"
+                onChange={(e) => debouncedSetQuery(e.target.value, setQuery)}
+              />
               <i className="fa-solid fa-magnifying-glass"></i>
             </div>
           </div>
@@ -96,19 +112,32 @@ const FriendRequest = () => {
               </div>
             ))}
           </div>
+
+          <CustomPagination
+            currentPage={page}
+            setCurrentPage={setPage}
+            hasPrevPage={requests?.pagination?.hasPrevPage}
+            hasNextPage={requests?.pagination?.hasNextPage}
+          />
         </div>
       ) : (
         <div className="friend-request-data-container">
           <div className="head">
             <p className="heading">View Friends</p>
             <div className="search-container">
-              <input type="search" placeholder="Search User" />
+              <input
+                type="search"
+                placeholder="Search User"
+                onChange={(e) =>
+                  debouncedSetQuery(e.target.value, setFriendsQuery)
+                }
+              />
               <i className="fa-solid fa-magnifying-glass"></i>
             </div>
           </div>
 
           <div className="flexbox-container mt-4 mb-4">
-            {friends?.data?.[0]?.users?.map((i, index) => (
+            {friends?.data?.map((i, index) => (
               <div className="request-box" key={`friends${index}`}>
                 <img src={i?.user?.image} className="thumb-img" alt="" />
                 <div className="content">
@@ -126,6 +155,13 @@ const FriendRequest = () => {
               </div>
             ))}
           </div>
+
+          <CustomPagination
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            hasPrevPage={friends?.pagination?.hasPrevPage}
+            hasNextPage={friends?.pagination?.hasNextPage}
+          />
         </div>
       )}
     </section>

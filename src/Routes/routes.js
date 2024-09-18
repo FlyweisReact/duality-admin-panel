@@ -1,8 +1,6 @@
 /** @format */
-
 import ForgetPassword from "../Pages/Auth/ForgetPassword";
 import Login from "../Pages/Auth/Login";
-import Signup from "../Pages/Auth/Signup";
 import Dashboard from "../Pages/Dashboard/Dashboard";
 import EditProfile from "../Pages/Admin/EditProfile";
 import CreateFaq from "../Pages/Faq/CreateFaq";
@@ -12,7 +10,6 @@ import Notification from "../Pages/Notification/Notification";
 import CreatePolicy from "../Pages/PrivacyPolicy/CreatePolicy";
 import EditPolicy from "../Pages/PrivacyPolicy/EditPolicy";
 import Privacy from "../Pages/PrivacyPolicy/Privacy";
-import AllTickets from "../Pages/Query/AllTickets";
 import Query from "../Pages/Query/Query";
 import TicketDetails from "../Pages/Query/TicketDetails";
 import Report from "../Pages/Report/Report";
@@ -22,7 +19,6 @@ import EditTerms from "../Pages/Terms/EditTerms";
 import Terms from "../Pages/Terms/Terms";
 import EditUserProfile from "../Pages/User/EditUserProfile";
 import FriendRequest from "../Pages/User/FriendRequest";
-import UpdateUserPost from "../Pages/User/UpdateUserPost";
 import UserProfile from "../Pages/User/UserProfile";
 import Users from "../Pages/User/Users";
 
@@ -30,10 +26,6 @@ const routes = [
   {
     path: "/",
     element: <Login />,
-  },
-  {
-    path: "/signup",
-    element: <Signup />,
   },
   {
     path: "/forget-password",
@@ -60,10 +52,6 @@ const routes = [
     element: <EditUserProfile />,
   },
   {
-    path: "/users/update-post/:id",
-    element: <UpdateUserPost />,
-  },
-  {
     path: "/users/friend-requests/:id",
     element: <FriendRequest />,
   },
@@ -88,7 +76,7 @@ const routes = [
     element: <Query />,
   },
   {
-    path: "/ticket-detail",
+    path: "/ticket-detail/:id",
     element: <TicketDetails />,
   },
   {
@@ -100,7 +88,7 @@ const routes = [
     element: <CreateTerms />,
   },
   {
-    path: "/edit-terms",
+    path: "/edit-terms/:id",
     element: <EditTerms />,
   },
   {
@@ -122,10 +110,6 @@ const routes = [
   {
     path: "/create-faq",
     element: <CreateFaq />,
-  },
-  {
-    path: "/all-tickets",
-    element: <AllTickets />,
   },
 ];
 

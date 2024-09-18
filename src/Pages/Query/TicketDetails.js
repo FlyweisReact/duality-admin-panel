@@ -1,12 +1,45 @@
 /** @format */
 
-import React from "react";
-import { BackBtn, SectionHeading } from "../../Components/HelpingComponent";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  BackBtn,
+  CustomLoader,
+  SectionHeading,
+} from "../../Components/HelpingComponent";
 import HOC from "../../Layouts/HOC";
+import { useParams } from "react-router-dom";
+import { getApi } from "../../Repository/Api";
+import endPoints from "../../Repository/apiConfig";
+import { QueryReply } from "../../Components/Modals";
 
 const TicketDetails = () => {
+  const { id } = useParams();
+  const [response, setResponse] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [messageRes, setMessageRes] = useState({});
+
+  const fetchHandler = useCallback(() => {
+    getApi(endPoints.Queries.getById(id), {
+      setResponse,
+      setLoading,
+    });
+  }, [id]);
+
+  useEffect(() => {
+    fetchHandler();
+  }, [fetchHandler]);
+
   return (
     <section>
+      <QueryReply
+        show={open}
+        handleClose={() => setOpen(false)}
+        data={messageRes}
+        fetchHandler={fetchHandler}
+        contactId={id}
+      />
+      {loading && <CustomLoader />}
       <div
         className="flexbox-container"
         style={{ gap: "10px", alignItems: "center" }}
@@ -18,49 +51,56 @@ const TicketDetails = () => {
       <div className="ticket-detail mt-3">
         <div className="value-container">
           <p className="label">Ticket Id</p>
-          <p className="value">#6943</p>
+          <p className="value">#{response?.data?._id?.slice(-4)}</p>
         </div>
         <div className="value-container">
           <p className="label">Ticket Status </p>
-          <p className="value unread-status">open</p>
+          <p className="value"> {response?.data?.status} </p>
         </div>
-        <div className="value-container">
-          <p className="label">Group</p>
-          <p className="value">Advertisement</p>
-        </div>
-        <div className="value-container">
-          <p className="label">Assign to</p>
-          <p className="value">Nicole Grandee</p>
-        </div>
-        <div className="value-container">
-          <p className="label">Set Priority</p>
-          <p className="value">Medium</p>
-        </div>
-        <div className="value-container">
-          <p className="label">Response if any</p>
-          <p className="value">First response 10:30am, 25 aug 2024</p>
-        </div>
-        <div className="value-container">
-          <p className="label">Subject</p>
-          <p className="value">Sed ut perspiciatis unde omnis iste natus</p>
-        </div>
-        <div className="value-container">
-          <p className="label">Description</p>
-          <p className="value">
-            Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-            accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
-            quae ab illo inventore veritatis et quasi architecto beatae vitae
-            dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
-            aspernatur aut odit aut fugit, sed
-          </p>
-        </div>
+
+        {response?.data?.messages.map((i, index) => (
+          <div
+            key={index}
+           className="message-box"
+          >
+            <div className="value-container">
+              <p className="label">Message</p>
+              <p className="value"> {i?.message}</p>
+            </div>
+            {i?.reply ? (
+              <div className="value-container">
+                <p className="label">Reply</p>
+                <p className="value"> {i?.reply} </p>
+              </div>
+            ) : (
+              <button
+                className="reply-msg"
+                onClick={() => {
+                  setMessageRes(i);
+                  setOpen(true);
+                }}
+              >
+                Reply
+              </button>
+            )}
+          </div>
+        ))}
+
         <div className="value-container">
           <p className="label">Complained By </p>
-          <p className="value">Kwak Seong-Min</p>
+          <p className="value"> {response?.data?.fullName} </p>
+        </div>
+        <div className="value-container">
+          <p className="label"> Sender email address </p>
+          <p className="value"> {response?.data?.email} </p>
+        </div>
+        <div className="value-container">
+          <p className="label"> Sender mobile number </p>
+          <p className="value"> {response?.data?.mobileNumber} </p>
         </div>
         <div className="value-container">
           <p className="label">Date of complaint</p>
-          <p className="value">10/1/2024</p>
+          <p className="value"> {response?.data?.createdAt?.slice(0, 10)} </p>
         </div>
       </div>
     </section>

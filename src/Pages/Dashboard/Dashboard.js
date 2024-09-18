@@ -1,24 +1,48 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
-import {
-  trendingImg1,
-  trendingImg2,
-  trendingImg3,
-  trendingImg4,
-} from "../../assest";
-import {
-  DashboardCard,
-  TicketCards,
-  TrendingCard,
-} from "../../Components/Cards/AllCards";
+import React, { useCallback, useEffect, useState } from "react";
+import { DashboardCard, TicketCards } from "../../Components/Cards/AllCards";
 import TableLayout from "../../Components/TableLayout";
 import HOC from "../../Layouts/HOC";
 import { getApi } from "../../Repository/Api";
 import endPoints from "../../Repository/apiConfig";
+import { Link } from "react-router-dom";
+
+const showMsg = (data) => {
+  const text = data?.slice()?.reverse()?.[0]?.message;
+  if (text?.length > 30) {
+    return `${text?.substring(0, 30)}...`;
+  } else {
+    return text;
+  }
+};
 
 const Dashboard = () => {
   const [count, setCount] = useState({});
+  const [blockedUser, setBlockedUser] = useState({});
+  const [tickets, setTickets] = useState({});
+  const [trendingPhotos, setTrendingPhotos] = useState({});
+  const [photosFilter, setPhotosFilter] = useState("");
+  const [trendingVideo, setTrendingVideo] = useState({});
+  const [videoFilter, setVideoFilter] = useState("");
+
+  const getTrendingPhotos = useCallback(() => {
+    getApi(endPoints.trending.photos(photosFilter), {
+      setResponse: setTrendingPhotos,
+    });
+  }, [photosFilter]);
+
+  const getTrendingVideo = useCallback(() => {
+    getApi(endPoints.trending.photos(videoFilter), {
+      setResponse: setTrendingVideo,
+    });
+  }, [videoFilter]);
+
+  const fetchHandler = () => {
+    getApi(endPoints.users.allUser({ isVerified: false, limit: 50 }), {
+      setResponse: setBlockedUser,
+    });
+  };
 
   const fetchCounts = () => {
     getApi(endPoints.dashboard.userCount, {
@@ -26,20 +50,52 @@ const Dashboard = () => {
     });
   };
 
+  const fetchTickets = () => {
+    getApi(endPoints.Queries.getAll, {
+      setResponse: setTickets,
+    });
+  };
+
   useEffect(() => {
     fetchCounts();
+    fetchHandler();
+    fetchTickets();
   }, []);
 
-  const blockedUserHead = ["Sr.No", "User Name", "Blocked", "Reported content"];
-  const blockedUserData = [
-    [1, "Tanisq Rawat", "5 Times", "None"],
-    [2, "Nisha Gupta", "10 Times", "5"],
-    [3, "Elrich Rozar", "12 Times", "20"],
-    [4, "Mesh Cutinoh", "15 Times", "31"],
-  ];
+  useEffect(() => {
+    getTrendingPhotos();
+  }, [getTrendingPhotos]);
 
-  const TrendingPhotos1 = [trendingImg1, trendingImg2, trendingImg2];
-  const TrendingPhotos2 = [trendingImg3, trendingImg4, trendingImg4];
+  useEffect(() => {
+    getTrendingVideo();
+  }, [getTrendingVideo]);
+
+  const allTrendingImagePost = trendingPhotos?.data?.filter((i) => i?.image);
+  const allTrendingVideoPost = trendingVideo?.data?.filter((i) => i?.video);
+  const blockedUserHead = ["Sr.No", "User", "Mobile Number", "Email address"];
+  const blockedUserData = blockedUser?.data?.docs
+    ?.slice()
+    ?.reverse()
+    ?.slice(0, 5)
+    ?.map((i, index) => [
+      `#${index + 1}`,
+      <Link to={`/users/${i?._id}`}>{i?.fullName}</Link>,
+      i?.mobileNumber,
+      i?.email,
+    ]);
+
+  const ticketData = tickets?.data
+    ?.slice()
+    ?.reverse()
+    ?.slice(0, 5)
+    ?.map((i) => ({
+      id: i?._id?.slice(-4),
+      by: i?.fullName,
+      subTitle: showMsg(i?.messages),
+      createdAt: i?.createdAt?.slice(0, 10),
+      status: i?.status,
+      mainId: i?._id,
+    }));
 
   return (
     <section className="dashboard">
@@ -66,39 +122,88 @@ const Dashboard = () => {
         className="flexbox-container mt-4"
         style={{ alignItems: "flex-start" }}
       >
-        <div className="space-bg highly-blocked-user-table">
-          <p className="table-heading">Highly blocked user </p>
-          <TableLayout
-            thead={blockedUserHead}
-            tbody={blockedUserData}
-            className={"mt-4"}
-          />
-        </div>
+        {blockedUserData?.length > 0 && (
+          <div className="space-bg highly-blocked-user-table">
+            <p className="table-heading">Highly blocked user </p>
+            <TableLayout
+              thead={blockedUserHead}
+              tbody={blockedUserData}
+              className={"mt-4"}
+            />
+          </div>
+        )}
 
-        <div className="space-bg tickets-container">
-          <p className="heading">Recent Tickets</p>
-          <p className="sub-heading mt-2 mb-2">
-            This will show the newest tickets raised
-          </p>
+        {ticketData?.length > 0 && (
+          <div className="space-bg tickets-container">
+            <p className="heading">Recent Tickets</p>
+            <p className="sub-heading mt-2 mb-2">
+              This will show the newest tickets raised
+            </p>
 
-          <TicketCards />
-          <TicketCards className={"mt-3"} />
-        </div>
+            {ticketData?.map((i, index) => (
+              <TicketCards
+                className={`${index + 1 !== 1 ? "mt-3" : ""}`}
+                key={`ticket${index}`}
+                id={i?.id}
+                subTitle={i?.subTitle}
+                by={i?.by}
+                createdAt={i?.createdAt}
+                status={i?.status}
+                mainId={i?.mainId}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="flexbox-container mt-4">
-        <TrendingCard
-          className={"space-bg"}
-          title={"Trending photos"}
-          subTitle={"Trending photos of today"}
-          images={TrendingPhotos1}
-        />
-        <TrendingCard
-          className={"space-bg"}
-          title={"Trending videos"}
-          subTitle={"Trending videos of today"}
-          images={TrendingPhotos2}
-        />
+        {allTrendingImagePost?.length > 0 && (
+          <div className={`trending-photos space-bg`}>
+            <div className="head">
+              <p className="heading"> Trending photos </p>
+              <select onChange={(e) => setPhotosFilter(e.target.value)}>
+                <option value="">All</option>
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="week">Week</option>
+                <option value="month">Month</option>
+              </select>
+            </div>
+            {photosFilter && (
+              <p className="sub-title"> Trending photos of {photosFilter} </p>
+            )}
+            <div className="flex-container">
+              {allTrendingImagePost?.map((i, index) => (
+                <img src={i?.image} key={`trending${index}`} alt="" />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {allTrendingVideoPost?.length > 0 && (
+          <div className={`trending-photos space-bg`}>
+            <div className="head">
+              <p className="heading"> Trending videos </p>
+              <select onChange={(e) => setVideoFilter(e.target.value)}>
+                <option value="">All</option>
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="week">Week</option>
+                <option value="month">Month</option>
+              </select>
+            </div>
+            {videoFilter && (
+              <p className="sub-title"> Trending videos of {videoFilter} </p>
+            )}
+            <div className="flex-container">
+              {allTrendingVideoPost?.map((i, index) => (
+                <video controls key={`video${index}`}>
+                  <source src={i?.video} type="video/mp4" />
+                </video>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -66,45 +66,6 @@ const apiRequest = async (method, url, payload = null, options = {}) => {
   }
 };
 
-const apiRequest_with_redux = (method, url, payload = null, options = {}) => {
-  const {
-    setResponse,
-    setLoading,
-    additionalFunctions = [],
-    successMsg,
-    errorMsg,
-    dispatchFunc = [],
-  } = options;
-  return async (dispatch) => {
-    if (setLoading) setLoading(true);
-    try {
-      let response;
-      if (method === "get" || method === "delete") {
-        response = await axios[method](`${Baseurl}${url}`, getHeaders());
-      } else {
-        response = await axios[method](
-          `${Baseurl}${url}`,
-          payload,
-          getHeaders()
-        );
-      }
-      if (setResponse) setResponse(response.data);
-      if (successMsg) showMsg("", successMsg, "success");
-      dispatchFunc.forEach(
-        (func) =>
-          func && typeof func === "function" && dispatch(func(response?.data))
-      );
-      additionalFunctions.forEach(
-        (func) => func && typeof func === "function" && func(response?.data)
-      );
-    } catch (error) {
-      handleError(error, errorMsg);
-    } finally {
-      if (setLoading) setLoading(false);
-    }
-  };
-};
-
 export const saveHeader = (token) => {
   localStorage.setItem("token", token);
 };
@@ -115,6 +76,3 @@ export const putApi = (url, payload, options) =>
   apiRequest("put", url, payload, options);
 export const deleteApi = (url, options) =>
   apiRequest("delete", url, null, options);
-
-export const postApiWithRedux = (url, payload, options) =>
-  apiRequest_with_redux("post", url, payload, options);

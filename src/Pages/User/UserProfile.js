@@ -1,7 +1,11 @@
 /** @format */
 
 import React, { useCallback, useEffect, useState } from "react";
-import { BackBtn, CustomLoader } from "../../Components/HelpingComponent";
+import {
+  BackBtn,
+  CustomLoader,
+  CustomPagination,
+} from "../../Components/HelpingComponent";
 import HOC from "../../Layouts/HOC";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { deleteApi, getApi } from "../../Repository/Api";
@@ -14,6 +18,8 @@ const UserProfile = () => {
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState({});
   const [type, setType] = useState("photos");
+  const [photosFilter, setPhotosFilter] = useState("");
+  const [page, setPage] = useState(1);
 
   const removePostHandler = (id) => {
     deleteApi(endPoints.posts.removePost(id), {
@@ -31,10 +37,17 @@ const UserProfile = () => {
   }, [id]);
 
   const fetchPosts = useCallback(() => {
-    getApi(endPoints.posts.getPostByUserId(id), {
-      setResponse: setPosts,
-    });
-  }, [id]);
+    getApi(
+      endPoints.posts.getPostByUserId({
+        id,
+        type: photosFilter,
+        page,
+      }),
+      {
+        setResponse: setPosts,
+      }
+    );
+  }, [id, photosFilter, page]);
 
   useEffect(() => {
     fetchData();
@@ -44,9 +57,12 @@ const UserProfile = () => {
     fetchPosts();
   }, [fetchPosts]);
 
-  // Filter out the posts that have images
   const allImagePosts = posts?.data?.filter((i) => i?.image);
   const allVideoPosts = posts?.data?.filter((i) => i?.video);
+
+  useEffect(() => {
+    setPage(1);
+  }, [type]);
 
   return (
     <section className="user-profile-page">
@@ -102,12 +118,15 @@ const UserProfile = () => {
         </div>
         <div className="remaining">
           <div className="filter-section">
-            <select>
-              <option>Filter</option>
-              <option>Most recent</option>
-              <option>Most likes</option>
-              <option>Most saved</option>
-              <option>Most shared</option>
+            <select
+              onChange={(e) => setPhotosFilter(e.target.value)}
+              value={photosFilter}
+            >
+              <option value="">Filter</option>
+              <option value="mostRecent">Most recent</option>
+              <option value="mostLike">Most likes</option>
+              <option value="mostSaved">Most saved</option>
+              <option value="mostShare">Most shared</option>
             </select>
           </div>
 
@@ -148,6 +167,12 @@ const UserProfile = () => {
                   </div>
                 ))}
           </div>
+          <CustomPagination
+            currentPage={page}
+            setCurrentPage={setPage}
+            hasNextPage={posts?.hasNextPage}
+            hasPrevPage={posts?.hasPrevPage}
+          />
         </div>
       </div>
     </section>

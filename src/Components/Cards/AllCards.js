@@ -1,22 +1,33 @@
 /** @format */
 
+import { useNavigate } from "react-router-dom";
 import { graphDown, graphUp } from "../../assest";
 
-const TicketCards = ({ className }) => {
+const TicketCards = ({
+  className,
+  id,
+  subTitle,
+  by,
+  createdAt,
+  status,
+  mainId,
+}) => {
+  const navigate = useNavigate();
   return (
-    <div className={`ticket-card ${className}`}>
-      <p className="id">#6493</p>
+    <div
+      className={`ticket-card ${className}`}
+      style={{ cursor: "pointer" }}
+      onClick={() => navigate(`/ticket-detail/${mainId}`)}
+    >
+      <p className="id">#{id}</p>
       <div className="flex-cont">
         <div className="content">
-          <p className="title">Sub: UK/USA Websites Guest Posting…</p>
-          <p className="sub-title">
-            Brief:vitae dicta sunt explicabo. Nemo.......{" "}
-          </p>
-          <p className="author">By : Kwak Seong-Min</p>
+          <p className="title">Sub: {subTitle}</p>
+          <p className="author">By : {by} </p>
         </div>
         <div className="status">
-          <p className="open-badge">Open</p>
-          <p className="date">10/1/2024</p>
+          <p className="open-badge"> {status} </p>
+          <p className="date"> {createdAt} </p>
         </div>
       </div>
     </div>

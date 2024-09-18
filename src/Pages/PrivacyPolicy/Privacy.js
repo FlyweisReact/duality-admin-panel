@@ -41,22 +41,29 @@ const Privacy = () => {
         <div className="filter-section">
           <p className="table-heading"></p>
           <div className="content">
-            <button
-              className="create-btn"
-              onClick={() => navigate("/create-policy")}
-            >
-              Create new policy
-            </button>
-            <div className="table-actions">
-              <i
-                className="fa-solid fa-pen"
-                onClick={() => navigate(`/edit-policy/${data?.data?.[0]?._id}`)}
-              ></i>
-              <i
-                className="fa-regular fa-trash-can"
-                onClick={() => removeHandler()}
-              ></i>
-            </div>
+            {!data?.data?.[0]?._id && (
+              <button
+                className="create-btn"
+                onClick={() => navigate("/create-policy")}
+              >
+                Create new policy
+              </button>
+            )}
+
+            {data?.data?.[0]?._id && (
+              <div className="table-actions">
+                <i
+                  className="fa-solid fa-pen"
+                  onClick={() =>
+                    navigate(`/edit-policy/${data?.data?.[0]?._id}`)
+                  }
+                ></i>
+                <i
+                  className="fa-regular fa-trash-can"
+                  onClick={() => removeHandler()}
+                ></i>
+              </div>
+            )}
           </div>
         </div>
 

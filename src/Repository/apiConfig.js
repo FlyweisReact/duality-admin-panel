@@ -3,6 +3,10 @@
 const endPoints = {
   auth: {
     login: "/admin/login",
+    myProfile: "/admin/getprofile",
+    forgetPassword: "/admin/forget/Password",
+    verifyOtp: "/admin/forgot/Verifyotp",
+    updatePassword: (id) => `/admin/changePassword/${id}`,
   },
   users: {
     allUser: ({
@@ -35,14 +39,17 @@ const endPoints = {
     edit: (id) => `/admin/privacy/${id}`,
   },
   posts: {
-    getPostByUserId: (id) => `/admin/getAllPostsByUserId/${id}`,
+    getPostByUserId: ({ id, type = "", page = 1, limit = 10 }) =>
+      `/admin/getPostsFilterByUserId/${id}?type=${type}&page=${page}&limit=${limit}`,
     removePost: (id) => `/admin/post/${id}`,
   },
   freindRequest: {
-    getbyUserId: (id) => `/admin/getFriendRequestsByUserId/${id}`,
+    getbyUserId: ({ id, page = 1, limit = 10, query }) =>
+      `/admin/getFriendRequestsByUserId/${id}?page=${page}&limit=${limit}&search=${query}`,
   },
   friends: {
-    getByUserId: (id) => `/admin/getAllFriendsByUserId/${id}`,
+    getByUserId: ({ id, page = 1, limit = 10, query }) =>
+      `/admin/getAllFriendsByUserId/${id}?page=${page}&limit=${limit}&search=${query}`,
   },
   help: {
     get: "/admin/call-us",
@@ -50,6 +57,29 @@ const endPoints = {
     create: "/admin/call/us",
     edit: (id) => `/admin/call-us/${id}`,
     remove: (id) => `/admin/call-us/${id}`,
+  },
+  Queries: {
+    getAll: "/admin/contact-us",
+    getById: (id) => `/admin/contact-us/${id}`,
+    sendResponse: `/admin/contact-us/reply`,
+    delete: (id) => `/admin/contact-us/${id}`,
+  },
+  terms: {
+    getAll: "/admin/terms-and-conditions",
+    getById: (id) => `/admin/terms-and-conditions/${id}`,
+    edit: (id) => `/admin/terms-and-conditions/${id}`,
+    remove: (id) => `/admin/terms-and-conditions/${id}`,
+    create: `/admin/terms-and-conditions`,
+  },
+  trending: {
+    photos: (filter = "") => `/admin/getMostPopularPosts?filter=${filter}`,
+  },
+  faq: {
+    getAll: "/admin/faqs",
+    create: "/admin/faqs/create",
+    getbyId: (id) => `/admin/faqs/${id}`,
+    edit: (id) => `/admin/faqs/${id}`,
+    remove: (id) => `/admin/faqs/${id}`,
   },
 };
 

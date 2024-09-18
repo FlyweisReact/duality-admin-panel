@@ -7,4 +7,11 @@ const debouncedSetQuery = (term, setQuery) => {
   }, 500);
 };
 
-export { debouncedSetQuery };
+
+const LogoutHandler = (navigate) => {
+  localStorage.clear()
+  navigate('/')
+}
+
+
+export { debouncedSetQuery ,LogoutHandler };
