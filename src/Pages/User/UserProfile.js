@@ -81,8 +81,8 @@ const UserProfile = () => {
           <p className="heading mt-2 mb-2"> {data?.data?.user?.fullName} </p>
           <ul>
             <li>
-              {data?.data?.user?.friends?.[0]?.users?.length || 0}{" "}
-              {data?.data?.user?.friends?.[0]?.users?.length > 1
+              {data?.data?.user?.friends?.length || 0}{" "}
+              {data?.data?.user?.friends?.length > 1
                 ? "Friends"
                 : "Friend"}{" "}
             </li>
