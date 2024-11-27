@@ -122,88 +122,86 @@ const Dashboard = () => {
         className="flexbox-container mt-4"
         style={{ alignItems: "flex-start" }}
       >
-        {blockedUserData?.length > 0 && (
-          <div className="space-bg highly-blocked-user-table">
-            <p className="table-heading">Highly blocked user </p>
-            <TableLayout
-              thead={blockedUserHead}
-              tbody={blockedUserData}
-              className={"mt-4"}
+        <div className="space-bg highly-blocked-user-table">
+          <p className="table-heading">Highly blocked user </p>
+          <TableLayout
+            thead={blockedUserHead}
+            tbody={blockedUserData}
+            className={"mt-4"}
+          />
+        </div>
+
+        <div className="space-bg tickets-container">
+          <p className="heading">Recent Tickets</p>
+          <p className="sub-heading mt-2 mb-2">
+            This will show the newest tickets raised
+          </p>
+
+          {ticketData?.map((i, index) => (
+            <TicketCards
+              className={`${index + 1 !== 1 ? "mt-3" : ""}`}
+              key={`ticket${index}`}
+              id={i?.id}
+              subTitle={i?.subTitle}
+              by={i?.by}
+              createdAt={i?.createdAt}
+              status={i?.status}
+              mainId={i?.mainId}
             />
-          </div>
-        )}
-
-        {ticketData?.length > 0 && (
-          <div className="space-bg tickets-container">
-            <p className="heading">Recent Tickets</p>
-            <p className="sub-heading mt-2 mb-2">
-              This will show the newest tickets raised
-            </p>
-
-            {ticketData?.map((i, index) => (
-              <TicketCards
-                className={`${index + 1 !== 1 ? "mt-3" : ""}`}
-                key={`ticket${index}`}
-                id={i?.id}
-                subTitle={i?.subTitle}
-                by={i?.by}
-                createdAt={i?.createdAt}
-                status={i?.status}
-                mainId={i?.mainId}
-              />
-            ))}
-          </div>
-        )}
+          ))}
+        </div>
       </div>
 
       <div className="flexbox-container mt-4">
-        {allTrendingImagePost?.length > 0 && (
-          <div className={`trending-photos space-bg`}>
-            <div className="head">
-              <p className="heading"> Trending photos </p>
-              <select onChange={(e) => setPhotosFilter(e.target.value)}>
-                <option value="">All</option>
-                <option value="today">Today</option>
-                <option value="yesterday">Yesterday</option>
-                <option value="week">Week</option>
-                <option value="month">Month</option>
-              </select>
-            </div>
-            {photosFilter && (
-              <p className="sub-title"> Trending photos of {photosFilter} </p>
-            )}
-            <div className="flex-container">
-              {allTrendingImagePost?.map((i, index) => (
-                <img src={i?.image} key={`trending${index}`} alt="" />
-              ))}
-            </div>
+        <div
+          className={`trending-photos space-bg`}
+          style={{ maxWidth: "100%" }}
+        >
+          <div className="head">
+            <p className="heading"> Trending photos </p>
+            <select onChange={(e) => setPhotosFilter(e.target.value)}>
+              <option value="">All</option>
+              <option value="today">Today</option>
+              <option value="yesterday">Yesterday</option>
+              <option value="week">Week</option>
+              <option value="month">Month</option>
+            </select>
           </div>
-        )}
+          {photosFilter && (
+            <p className="sub-title"> Trending photos of {photosFilter} </p>
+          )}
+          <div className="flex-container">
+            {allTrendingImagePost?.map((i, index) => (
+              <img src={i?.image} key={`trending${index}`} alt="" />
+            ))}
+          </div>
+        </div>
 
-        {allTrendingVideoPost?.length > 0 && (
-          <div className={`trending-photos space-bg`}>
-            <div className="head">
-              <p className="heading"> Trending videos </p>
-              <select onChange={(e) => setVideoFilter(e.target.value)}>
-                <option value="">All</option>
-                <option value="today">Today</option>
-                <option value="yesterday">Yesterday</option>
-                <option value="week">Week</option>
-                <option value="month">Month</option>
-              </select>
-            </div>
-            {videoFilter && (
-              <p className="sub-title"> Trending videos of {videoFilter} </p>
-            )}
-            <div className="flex-container">
-              {allTrendingVideoPost?.map((i, index) => (
-                <video controls key={`video${index}`}>
-                  <source src={i?.video} type="video/mp4" />
-                </video>
-              ))}
-            </div>
+        <div
+          className={`trending-photos space-bg`}
+          style={{ maxWidth: "100%" }}
+        >
+          <div className="head">
+            <p className="heading"> Trending videos </p>
+            <select onChange={(e) => setVideoFilter(e.target.value)}>
+              <option value="">All</option>
+              <option value="today">Today</option>
+              <option value="yesterday">Yesterday</option>
+              <option value="week">Week</option>
+              <option value="month">Month</option>
+            </select>
           </div>
-        )}
+          {videoFilter && (
+            <p className="sub-title"> Trending videos of {videoFilter} </p>
+          )}
+          <div className="flex-container">
+            {allTrendingVideoPost?.map((i, index) => (
+              <video controls key={`video${index}`}>
+                <source src={i?.video} type="video/mp4" />
+              </video>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
