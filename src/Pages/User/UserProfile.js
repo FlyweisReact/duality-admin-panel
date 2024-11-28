@@ -64,6 +64,7 @@ const UserProfile = () => {
     setPage(1);
   }, [type]);
 
+
   return (
     <section className="user-profile-page">
       {loading && <CustomLoader />}
@@ -82,9 +83,7 @@ const UserProfile = () => {
           <ul>
             <li>
               {data?.data?.user?.friends?.length || 0}{" "}
-              {data?.data?.user?.friends?.length > 1
-                ? "Friends"
-                : "Friend"}{" "}
+              {data?.data?.user?.friends?.length > 1 ? "Friends" : "Friend"}{" "}
             </li>
             <li>
               {" "}
