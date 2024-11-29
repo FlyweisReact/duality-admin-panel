@@ -31,7 +31,7 @@ const Report = () => {
 
   const fetchHandler = useCallback(() => {
     getApi(
-      endPoints.users.allUser({ page, isVerified: false, search: query }),
+      endPoints.users.allUser({ page, isVerified: true, search: query }),
       {
         setResponse: setData,
         setLoading,
@@ -72,7 +72,7 @@ const Report = () => {
     <Form.Check
       type="switch"
       id="custom-switch"
-      checked={!i?.isVerified}
+      checked={i?.isVerified}
       onChange={() => updateUserStatus(i)}
     />,
     <Dropdown

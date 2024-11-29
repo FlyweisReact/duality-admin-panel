@@ -39,7 +39,7 @@ const Dashboard = () => {
   }, [videoFilter]);
 
   const fetchHandler = () => {
-    getApi(endPoints.users.allUser({ isVerified: false, limit: 50 }), {
+    getApi(endPoints.users.allUser({ isVerified: true, limit: 50 }), {
       setResponse: setBlockedUser,
     });
   };
@@ -122,7 +122,10 @@ const Dashboard = () => {
         className="flexbox-container mt-4"
         style={{ alignItems: "flex-start" }}
       >
-        <div className="space-bg highly-blocked-user-table">
+        <div
+          className="space-bg highly-blocked-user-table"
+          style={{ maxWidth: "100%" }}
+        >
           <p className="table-heading">Highly blocked user </p>
           <TableLayout
             thead={blockedUserHead}
@@ -131,7 +134,10 @@ const Dashboard = () => {
           />
         </div>
 
-        <div className="space-bg tickets-container">
+        <div
+          className="space-bg tickets-container"
+          style={{ maxWidth: "100%" }}
+        >
           <p className="heading">Recent Tickets</p>
           <p className="sub-heading mt-2 mb-2">
             This will show the newest tickets raised
@@ -172,7 +178,14 @@ const Dashboard = () => {
           )}
           <div className="flex-container">
             {allTrendingImagePost?.map((i, index) => (
-              <img src={i?.image} key={`trending${index}`} alt="" />
+              <a href={i?.image} target="_blank" rel="noreferrer">
+                <img
+                  src={i?.image}
+                  key={`trending${index}`}
+                  alt="thumbnail not found"
+                  style={{ height: "278px", objectPosition: "top" }}
+                />
+              </a>
             ))}
           </div>
         </div>
@@ -196,9 +209,18 @@ const Dashboard = () => {
           )}
           <div className="flex-container">
             {allTrendingVideoPost?.map((i, index) => (
-              <video controls key={`video${index}`}>
-                <source src={i?.video} type="video/mp4" />
-              </video>
+              <a href={i?.video} target="_blank" rel="noreferrer">
+                <img
+                  src={i?.thumbnail}
+                  key={`video${index}`}
+                  alt={"thumbnail not found"}
+                  style={{
+                    height: "278px",
+                    objectPosition: "top",
+                    width: "156px",
+                  }}
+                />
+              </a>
             ))}
           </div>
         </div>

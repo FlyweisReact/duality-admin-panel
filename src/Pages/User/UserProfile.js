@@ -64,8 +64,6 @@ const UserProfile = () => {
     setPage(1);
   }, [type]);
 
-  console.log(allVideoPosts);
-
   return (
     <section className="user-profile-page">
       {loading && <CustomLoader />}
@@ -139,7 +137,7 @@ const UserProfile = () => {
             {type === "photos"
               ? allImagePosts?.map((i, index) => (
                   <div className="photos-collection" key={`photos${index}`}>
-                    <img src={i?.image} alt="" />{" "}
+                    <img src={i?.image} alt="thumbnail not found" />{" "}
                     <div className="actions">
                       <div className="icon">
                         <a href={i?.image} target="_blank" rel="noreferrer">
@@ -155,7 +153,7 @@ const UserProfile = () => {
                 ))
               : allVideoPosts?.map((i, index) => (
                   <div className="photos-collection" key={`video${index}`}>
-                    <img src={i?.thumbnail} alt="" />
+                    <img src={i?.thumbnail} alt=" thumbnail not found" />
 
                     <div className="actions">
                       <div className="icon">

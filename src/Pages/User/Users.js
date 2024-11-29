@@ -21,7 +21,6 @@ const Users = () => {
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
   const [count, setCount] = useState({});
-  const [status, setStatus] = useState(null);
   const [isVerified, setIsVerified] = useState(null);
   const [loading, setLoading] = useState(false);
   const [bg, setBg] = useState("#e5ecf6");
@@ -47,14 +46,11 @@ const Users = () => {
   };
 
   const fetchHandler = useCallback(() => {
-    getApi(
-      endPoints.users.allUser({ page, search: query, status, isVerified }),
-      {
-        setResponse: setData,
-        setLoading,
-      }
-    );
-  }, [page, query, status, isVerified]);
+    getApi(endPoints.users.allUser({ page, search: query, isVerified }), {
+      setResponse: setData,
+      setLoading,
+    });
+  }, [page, query, isVerified]);
 
   const fetchCounts = () => {
     getApi(endPoints.dashboard.userCount, {
@@ -87,7 +83,7 @@ const Users = () => {
     i?.mobileNumber,
     i?.email,
     i?.createdAt?.slice(0, 10),
-    i?.status ? (
+    !i?.isVerified ? (
       <span className="active-status">
         <span className="active-bg"></span>
         Active
@@ -101,7 +97,7 @@ const Users = () => {
     <Form.Check
       type="switch"
       id="custom-switch"
-      checked={!i?.isVerified}
+      checked={i?.isVerified}
       onChange={() => updateUserStatus(i)}
     />,
     <Dropdown
@@ -152,7 +148,6 @@ const Users = () => {
           count={count?.data?.users}
           isUp={true}
           onClickEvent={() => {
-            setStatus(null);
             setIsVerified(null);
             setBg("#e5ecf6");
           }}
@@ -163,7 +158,7 @@ const Users = () => {
           isUp={true}
           bg={"#D0FFE0"}
           onClickEvent={() => {
-            setStatus(true);
+            setIsVerified(false);
             setBg("#D0FFE0");
           }}
         />
@@ -173,17 +168,8 @@ const Users = () => {
           isUp={false}
           bg={"#E6E6E6"}
           onClickEvent={() => {
-            setStatus(false);
+            setIsVerified(true);
             setBg("#E6E6E6");
-          }}
-        />
-        <DashboardCard
-          title={"Blocked/Reported Users"}
-          count={count?.data?.blockedUser}
-          bg={"#FFD0D1"}
-          onClickEvent={() => {
-            setIsVerified(false);
-            setBg("#FFD0D1");
           }}
         />
       </div>
