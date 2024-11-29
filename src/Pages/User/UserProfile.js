@@ -64,6 +64,7 @@ const UserProfile = () => {
     setPage(1);
   }, [type]);
 
+  console.log(allVideoPosts);
 
   return (
     <section className="user-profile-page">
@@ -154,9 +155,8 @@ const UserProfile = () => {
                 ))
               : allVideoPosts?.map((i, index) => (
                   <div className="photos-collection" key={`video${index}`}>
-                    <video className="main-img">
-                      <source src={i?.video} type="video/mp4" />
-                    </video>
+                    <img src={i?.thumbnail} alt="" />
+
                     <div className="actions">
                       <div className="icon">
                         <a href={i?.video} target="_blank" rel="noreferrer">
