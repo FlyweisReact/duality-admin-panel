@@ -39,10 +39,10 @@ const Notification = () => {
   const thead = ["Sno", "Recipient", "Title", "Content", "Status", "Actions"];
 
   const filteredData = status
-    ? data?.data?.filter(
+    ? data?.data?.slice()?.reverse()?.filter(
         (i) => i?.status?.toLowerCase() === status?.toLowerCase()
       )
-    : data?.data;
+    : data?.data?.slice()?.reverse();
 
   const tbody = filteredData?.map((i, index) => [
     `#${index + 1}`,
